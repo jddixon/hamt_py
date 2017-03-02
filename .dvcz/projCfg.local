@@ -1,0 +1,19 @@
+# hamt_py/.dvcz/projCfg.local
+
+txt:std:LICENSE-MIT.md
+
+dir:pkg:hamt
+dir:clr:tmp
+
+code:std:.dvcz/projCfg.local
+code:std:.dvcz/projCfg
+code:std:.gitignore
+code:std:MANIFEST.in
+
+bash:std:bkp2u
+bash:std:countem
+bash:std:installit
+bash:std:styleit
+bash:std:test.all
+
+

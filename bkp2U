@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+if [ ! -z "${DEV_BASE// }" ]
+then
+  cd $DEV_BASE/py/hamt_py
+  
+  bl_listgen \
+    -d ../hamt_py \
+    -1L  \
+    -u $DVCZ_UDIR \
+    -X cover \
+    -X htmlcov \
+    -X .ssh \
+    $@
+  
+else
+  echo "DEV_BASE is not defined"
+fi
