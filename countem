@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if [ ! -z "${DEV_BASE// }" ]
+then
+  cd $DEV_BASE/py/hamt_py
+  
+  rm -rf build/* tmp/* 
+  
+  pySloc -L py   -X cover -X htmlcov -X dist -v $@
+else
+  echo "DEV_BASE is not defined"
+fi
