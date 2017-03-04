@@ -1,10 +1,14 @@
 py/hamt_py/CHANGES
 
+v0.0.3
+    2017-03-03
+        * add pylint, coverage, Leaf, and test                      SLOC  386
 v0.0.2
     2017-03-02
         * add configuration files
 v0.0.1
     2017-03-02
         * initial commit
+
 
 

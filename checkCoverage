@@ -1,0 +1,13 @@
+# hamt_py/checkCoverage
+
+# see coverage.readthedocs.io/en/latestt/config.html
+#
+## last line should be test*.py
+nosetests \
+    --with-coverage --cover-html \
+    --cover-tests \
+    --cover-erase \
+    --cover-branches \
+    --cover-inclusive  \
+    --cover-package=hamt   \
+    test*.py 

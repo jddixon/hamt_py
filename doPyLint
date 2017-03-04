@@ -1,0 +1,3 @@
+pylint setup.py hamt                                              \
+    test*.py
+
