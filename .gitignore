@@ -1,5 +1,6 @@
 *.bak
 *.egg-info
+*.go
 *.pyc
 *.swp
 *ZZZ
