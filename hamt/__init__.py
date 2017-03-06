@@ -5,12 +5,16 @@
 import sys
 
 __version__ = '0.0.3'
-__version_date__ = '2017-03-03'
+__version_date__ = '2017-03-06'
 
-__all__ = ['__version__', '__version_date__', 'HamtError', 'MAX_W',
-           'Leaf', ]
+__all__ = ['__version__', '__version_date__',
+           'MAX_W',
+           'uhash',
+           'HamtError', 'HamtNotFound',
+           'Leaf', 'Table', 'Root']
 
 # CONSTANTS
+
 MAX_W = 6
 
 # FUNCTIONS
@@ -25,6 +29,10 @@ def uhash(val):
 
 class HamtError(RuntimeError):
     """ General purpose exception for the package. """
+
+
+class HamtNotFound(HamtError):
+    """ Raised where there is no match for a key. """
 
 
 class Leaf(object):
@@ -53,3 +61,258 @@ class Leaf(object):
     def is_leaf(self):
         """ Return whether this Leaf is indeed a Leaf. """
         return True
+
+
+class Table(object):
+    """
+    Table with a fixed number of slots.
+
+    Each slot is either empty or points to either a Leaf or another Table.
+    """
+
+    @staticmethod
+    def check_table_param(depth, root):  # -> (int, int)
+        """ Raise if table parameter is out of range. """
+        if root is None:
+            raise HamtError("root must have a value")
+        wexp = root.wexp
+        texp = root.texp
+        if wexp > MAX_W:
+            raise HamtError("Max table size exceeded.")
+        if texp + (depth - 1) * wexp > 64:
+            raise HamtError("Max table depth exceeded.")
+        return wexp, texp           # Seen as unsigned ints
+
+    def __init__(self, depth, root):
+        wexp, texp = Table.check_table_param(depth, root)
+        self._wexp = wexp
+        self._texp = texp
+        self._root = root
+        flag = 1 << wexp            # seen a uint64
+        self._mask = flag - 1       # ditto
+        self._slots = None * wexp
+        self._bitmap = 0            # seen as uint64
+
+    @property
+    def root(self):
+        """ Return the root of the table. """
+        return self._root
+
+    @property
+    def wexp(self):
+        """
+        Return the w factor, where 2^w is the number of slots in the Table.
+        """
+        return self._wexp
+
+    @property
+    def texp(self):
+        """
+        Return the t factor, where 2^t is the number of slots in the Root.
+        """
+        return self._texp
+
+    @property
+    def max_slots(self):
+        """ Return the maximum number of slots that may be occupied. """
+        return 1 << self._wexp
+
+    def leaf_count(self):
+        """ Return a count of the leaf nodes in this Table, recursing. """
+        count = 0
+        for node in self._slots:
+            if node:
+                if node.is_leaf():
+                    count += 1
+                else:
+                    # regarding the node as a Table:
+                    count += node.table_count()
+        return count
+
+    def table_count(self):
+        """
+        Return a count of Table nodes below this Table (or Root),
+        including this Table.
+        """
+        count = 1       # this Table
+        for node in self._slots:
+            if node and not node.is_leaf():
+                count += node.table_count()
+        return count
+
+    def remove_from_slots(self, offset):
+        """ Remove an entry from this Table. """
+
+        cursize = len(self._slots)
+        if cursize == 0:
+            raise HamtError("attempt to delete from empty Table")
+        if offset >= cursize:
+            msg = 'Internal error: delete offset %d but table size %d' % (
+                offset, cursize)
+            raise HamtError(msg)
+        elif cursize == 1:
+            # LEAVES EMPTY TABLE, WHICH WILL HARM PERFORMANCE
+            self._slots = []
+        elif offset == 0:
+            self._slots = self._slots[1:]
+        elif offset == cursize - 1:
+            self._slots = self._slots[:-1]
+        else:
+            self._slots = self._slots[:offset] + self._slots[offset + 1:]
+
+    def delete_leaf(self, hcode, depth, key):
+        """
+        Remove a Leaf from the Table.
+
+        Enter with hcode the hashcode for the key shifted appropriately
+        for the current depth, so that the first w bits of the shifted
+        hashcod can be used as the index of the leaf in the table.
+
+        The caller guarantees that depth <= root.max_table_depth.
+        """
+
+        if len(self._slots) == 0:
+            raise HamtNotFound
+
+        ndx = hcode & self._mask
+        flag = 1 << ndx             # a uint64
+        mask = flag - 1
+        if self._bitmap & flag == 0:
+            raise HamtNotFound
+        # the node is present
+        # XXX NEED BITCOUNT HERE
+
+    def find_leaf(self, hcode, depth, key):
+        """ NOT YET IMPLEMENTED """
+
+    def insert_leaf(self, hcode, depth, leaf):
+        """ NOT YET IMPLEMENTED """
+
+    def is_leaf(self):
+        """ Return whether this is a Leaf (it isn't). """
+        return False
+
+
+class Root(object):
+    """ Root table of a HAMT Trie. """
+
+    def __init__(self, wexp, texp):
+        if wexp > MAX_W:
+            raise HamtError("max table size (%d) exceeded" % MAX_W)
+        if texp > 64:
+            raise HamtError("max root table size (64) exceeded")
+        flag = 1        # as uint64
+        flag <<= texp
+        count = 1 << texp   # number of slots available
+
+        self._wexp = wexp
+        self._texp = texp
+        self._max_table_depth = (64 - texp) // wexp
+        self._slot_count = count
+        self._mask = flag - 1
+        self._slots = None * texp
+
+    def leaf_count(self):
+        """ Return a count of leaf nodes under the root. """
+        count = 0
+        for node in self._slots:
+            if node:
+                if node.is_leaf():
+                    count += 1
+                else:
+                    # recurse
+                    count += node.leaf_count()
+        return count
+
+    def table_count(self):
+        """
+        Return a count of Tables under the Root, including the Root itself.
+        """
+        count = 1       # the root
+        for node in self._slots:
+            if node and not node.is_leaf():
+                count += node.table_count()
+        return count
+
+    def delete_leaf(self, key):
+        """ Find a delete a Leaf node in or below this Root, given its key. """
+
+        hcode = uhash(key)
+        ndx = hcode & self._mask
+        node = self._slots[ndx]
+        if node is None:
+            raise HamtNotFound
+        if node.is_leaf():
+            if node.key == key:
+                self._slots[ndx] = None
+            else:
+                raise HamtNotFound
+        else:
+            # entry is a Table, so recurse
+            if self._max_table_depth < 1:
+                raise HamtNotFound
+            else:
+                hcode >>= self._texp
+            node.delete_leaf(hcode, 1, key)
+
+    def find_leaf(self, key):
+        """
+        Given a properly shifted hashcode and the key for an entry,
+        return the value associated with the key or None if there
+        is no such value.
+        """
+
+        value = None
+        hcode = uhash(key)
+        ndx = hcode & self._mask
+        node = self._slots[ndx]
+
+        if node:
+            if node.is_leaf():
+                if node.key == key:
+                    value = node.value
+            else:
+                if self._max_table_depth > 0:
+                    # it's a Table, so recurse
+                    hcode >>= self._texp
+                    value = node.find_leaf(hcode, 1, key)
+        return value
+
+    def insert_leaf(self, leaf):
+        """ Insert a Leaf into or below the Root. """
+
+        hcode = uhash(leaf.key)
+        ndx = hcode & self._mask
+        node = self._slots[ndx]
+
+        if node is None:
+            # the slot is empty
+            self._slots = leaf
+        else:
+            # there is something already in the slot
+            if node.is_leaf():
+                # it's a leaf; replace value iff the keys match
+                cur_key = node.key
+                new_key = leaf.key
+                if cur_key == new_key:
+                    # keys match
+                    node.value = leaf.value
+                else:
+                    # keys differ, so we replace node with a Table
+                    if self._max_table_depth < 1:
+                        raise HamtError(
+                            "max table depth (%d) exceeded" %
+                            self._max_table_depth)
+                    new_hcode = hcode >> self._texp    # hcode for new entry
+
+                    new_table = Table(1, self)
+                    new_table.insert_leaf(new_hcode, 2, leaf)   # XXX CHECK 2
+                    self._slots[ndx] = new_table
+            else:
+                # it's a table
+                if self._max_table_depth < 1:
+                    raise HamtError(
+                        "max table depth (%d) exceeded" %
+                        self._max_table_depth)
+                new_hcode = hcode >> self._texp    # hcode for new entry
+                node.insert_leaf(new_hcode, 1, leaf)
