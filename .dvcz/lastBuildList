@@ -7,21 +7,21 @@ Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END RSA PUBLIC KEY-----
-hamt_py v0.0.3
-2017-03-06 22:57:53
+hamt_py v0.1.0
+2017-03-08 01:01:30
 # BEGIN CONTENT #
 hamt_py
  .dvcz
-  builds 7f2fca64392191a2df4c8932603af9b430742816
+  builds 90f356650c77a12be73942f5bd5347fa861120b7
   copyright 03efbf5a1d4c1f2a8e01f434653fab4f20777238
-  lastBuildList d8260d0bc416d465880ce70d755a6e967495b010
+  lastBuildList 01445dbe72016ffb6f1243760f8dbdbbf7925e55
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
   projCfg 4f086cdd03cd0267225f140a7d836971d1f6c641
   projCfg.local 3b240a4bea038e136d47f5fb94d9a50304aee3d6
-  version 9782bd9fcc253380c8baf7311a6b2f442cb3f01c
+  version 0c2e6d78e653e0485e2c15755bffca857ddab629
  .gitignore a29a464d1f999a8323f7cafe43fe2587b321f818
  .gitignore.local 701e71ad917b19e7f6b7fd4bdc542180e9d977a7
- CHANGES 564ce2d9ca43485ff8dcee43329a2869d8605506
+ CHANGES cb04ce4b0d863fa075d2dca863efc17a4fb5ef5f
  LICENSE-MIT.md 22d1a7acfe925d189280793d86aa9b1dc542daab
  README.md c42872778f76106b3a830d86758b20600c29d3ed
  TODO c7049fd02c5cb1def0749a2450962cfc4e8eb8e8
@@ -31,11 +31,12 @@ hamt_py
  dist
   hamt_py-0.0.2.tar.gz 351f9b299b12a91e111baf0706a40cb633706ad7
   hamt_py-0.0.3.tar.gz 489ceff604ee7895afc934a81fa9b2d8e2dab2c5
+  hamt_py-0.1.0.tar.gz d5285160ec39fb4ae8793555bdba8cf70c7a2b8b
  doPyLint 254ec06f78e01fcad9ffee48542c0860a8b0a79b
  ghpDoc
   index.md 9c6f24888d012058e4511eebbb384a294f49ed8c
  hamt
-  __init__.py 8abcd6121ce7bd3be44a46f4ec908a4509bebdf6
+  __init__.py 624cf7905fa3361784ca080c969b0e46bdeaef16
  installit 20e618660744346913b6a3a6e5913044ebca0089
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
  setup.py 3862d1300ec0b529e4c81c030e637978dfb98b83
@@ -44,4 +45,4 @@ hamt_py
  test_leaf.py 827057ad28da3e168395ffc2a56c388752320af5
 # END CONTENT #
 
-f8L/dfCPpOt2pmBRkffEyBB4na+VU+gNwPbEZzdm4gxQuTcxKUJ1SW8rvjxXsD4SmjUXGbZ9XpacGHXpbOl4EHhEB7bhm4/bAr9TiRt899f+B35t2jsXUzHnrFIbjBYlCkFh7RZOalutN/CkwyZjSQJbnOHeskE0h5WMNYARtpaglwU08eSk9vNd19F+ha6KIIJrvvVKi77Nm1RM3xCFla7HTfEqj71r0oHnaqHRGJrY2kin63JqVsHtBolfzZjpq+wDSHdfGrvdgT8FWglJ9YGNxrjPdUUq+K0L7MnpSNYrKiJV1fwxrk4sanPv2RrF2d+zjTSRqiDbFNbxF+quqw==
+kyxg+cs9Dj89pexCyTES7Wc5iB037aOik8Fv6gGzwbT/RaaJbgTbw0wbCZBvrWWyETc9FkChGAfLUSCKIy62dMfSKC0ScDhM/opXsz1/1i8WcB9zWmE1wDHKC5sE6pKI1FGOVd9SC3FNDaD78t1Gwuop/Mwul4KPJj0bbdTYYm/2TV/FBh3nkh9Ce1WoGNpB2eM/mcFNW707dIkoG2jlsrdKU7NvPoTwW56D50cxgCzszgESKuWZcY4VrElu3cVZceERqaxCBv7u1loVW/3oL9vLXk/fvz3/rT0tsNUdCkyqHytoAuxusUFY3pC0fYG8hjFGo4gsdOZ3kZAQTO1OwA==
