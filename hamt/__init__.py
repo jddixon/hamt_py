@@ -6,8 +6,8 @@ import sys
 
 from xlutil import popcount64
 
-__version__ = '0.1.0'
-__version_date__ = '2017-03-07'
+__version__ = '0.1.1'
+__version_date__ = '2017-03-08'
 
 __all__ = ['__version__', '__version_date__',
            'MAX_W',
@@ -70,6 +70,10 @@ class Table(object):
     Table with a fixed number of slots.
 
     Each slot is either empty or points to either a Leaf or another Table.
+
+    Unlike the Go version, a hamt_py Table can only be created if its
+    first leaf is specified.  That is, __init__() below is equivalent to
+    Go hamt_go's NewTableWithLeaf.
     """
 
     @staticmethod
@@ -85,19 +89,25 @@ class Table(object):
             raise HamtError("Max table depth exceeded.")
         return wexp, texp           # Seen as unsigned ints
 
-    def __init__(self, depth, root):
+    def __init__(self, depth, root, first_leaf):
         wexp, texp = Table.check_table_param(depth, root)
         self._wexp = wexp
         self._texp = texp
         self._root = root
-        flag = 1 << wexp            # seen a uint64
-        self._mask = flag - 1       # ditto
-        self._slots = []
-        self._bitmap = 0            # seen as uint64
+        wflag = 1 << wexp            # seen a uint64
+        self._mask = wflag - 1       # ditto
+        self._slots = [None] * wflag
+
+        shift_count = texp + (depth - 1) * wexp
+        hcode = uhash(first_leaf.key) >> shift_count
+        ndx = hcode & self._mask
+        flag = 1 << ndx             # see as uint64
+        self._slots[ndx] = first_leaf
+        self._bitmap = flag         # seen as uint64
 
     @property
     def root(self):
-        """ Return the root of the table. """
+        """ Return the Root of the table. """
         return self._root
 
     @property
@@ -115,8 +125,24 @@ class Table(object):
         return self._texp
 
     @property
+    def mask(self):
+        """ Return a bit vectory with the bit set if the slot is free. """
+        return self._mask
+
+    @property
+    def slots(self):
+        return self._slots
+
+    @property
+    def bitmap(self):
+        return self._bitmap
+
+    @property
     def max_slots(self):
-        """ Return the maximum number of slots that may be occupied. """
+        """
+        Return one more than the maximum number of slots that may be
+        occupied.
+        """
         return 1 << self._wexp
 
     def leaf_count(self):
@@ -124,7 +150,7 @@ class Table(object):
         count = 0
         for node in self._slots:
             if node:
-                if node.is_leaf():
+                if node.is_leaf:
                     count += 1
                 else:
                     # regarding the node as a Table:
@@ -138,7 +164,7 @@ class Table(object):
         """
         count = 1       # this Table
         for node in self._slots:
-            if node and not node.is_leaf():
+            if node and not node.is_leaf:
                 count += node.table_count()
         return count
 
@@ -187,7 +213,7 @@ class Table(object):
         if mask:
             slot_nbr = popcount64(self._bitmap & mask)
         node = self._slots[slot_nbr]
-        if node.is_leaf():
+        if node.is_leaf:
             # key = node.key        # REDUNDANT?
             if node.key == key:
                 self.remove_from_slots(slot_nbr)
@@ -224,7 +250,7 @@ class Table(object):
             if mask:
                 slot_nbr = popcount64(self._bitmap & mask)
             node = self._slots[slot_nbr]
-            if node.is_leaf():
+            if node.is_leaf:
                 if key == node.key:
                     value = node.value
             else:
@@ -257,7 +283,7 @@ class Table(object):
             # is there already something in this slot?
             if self._bitmap & flag:
                 entry = self._slots[slot_nbr]
-                if entry.is_leaf():
+                if entry.is_leaf:
                     if entry.key == leaf.key:
                         # keys match so replace value
                         entry.value = leaf.value        # MUST BE DEEPCOPY ?
@@ -267,9 +293,7 @@ class Table(object):
                             raise HamtError(
                                 "max table depth %d exceeded" %
                                 self._root.max_table_depth)
-                        deeper = Table(depth, self._root)
-                        # add the leaf to the new table
-                        self.insert_leaf(hcode << self._wexp, depth, entry)
+                        deeper = Table(depth, self._root, leaf)
                         # the new table replaces the existing leaf
                         self._slots[slot_nbr] = deeper
 
@@ -302,27 +326,72 @@ class Root(object):
     """ Root table of a HAMT Trie. """
 
     def __init__(self, wexp, texp):
+        if wexp < 2:
+            raise HamtError("w cannot be less than 2, is %d" % wexp)
+        if texp < 2:
+            raise HamtError("w cannot be less than 2, is %d" % texp)
         if wexp > MAX_W:
             raise HamtError("max table size (%d) exceeded" % MAX_W)
         if texp > 64:
             raise HamtError("max root table size (64) exceeded")
-        flag = 1        # as uint64
-        flag <<= texp
-        count = 1 << texp   # number of slots available
+        flag = 1 << texp    # number of slots available
 
         self._wexp = wexp
         self._texp = texp
         self._max_table_depth = (64 - texp) // wexp
-        self._slot_count = count
+        self._slot_count = flag
         self._mask = flag - 1
-        self._slots = []
+        self._slots = [None] * flag
+        # DEBUG
+        print("Root: wexp            %d" % wexp)
+        print("      texp            %d" % texp)
+        print("      max table depth %d" % self.max_table_depth)
+        print("      slot count      %d" % flag)
+        print("      mask            0x%x" % self._mask)
+        # END
+
+    @property
+    def wexp(self):
+        """
+        Return the w factor, where 2^w is the number of slots in the Table.
+        """
+        return self._wexp
+
+    @property
+    def texp(self):
+        """
+        Return the t factor, where 2^t is the number of slots in the Root.
+        """
+        return self._texp
+
+    @property
+    def max_table_depth(self):
+        """
+        Return the nmaximum number of slots in the Root or any descendents.
+        """
+        return self._max_table_depth
+
+    @property
+    def slot_count(self):
+        """ Return the number of slots in the root table.  """
+        return self._slot_count
+
+    @property
+    def mask(self):
+        """ A mask of bits: 1 if the slot is free, 0 if not. """
+        return self._mask
+
+    @property
+    def slots(self):
+        """ Return the slots table for the Root. """
+        return self._slots
 
     def leaf_count(self):
-        """ Return a count of leaf nodes under the root. """
+        """ Return a count of leaf nodes under the Root. """
         count = 0
         for node in self._slots:
             if node:
-                if node.is_leaf():
+                if node.is_leaf:
                     count += 1
                 else:
                     # recurse
@@ -333,9 +402,9 @@ class Root(object):
         """
         Return a count of Tables under the Root, including the Root itself.
         """
-        count = 1       # the root
+        count = 1       # the Root
         for node in self._slots:
-            if node and not node.is_leaf():
+            if node and not node.is_leaf:
                 count += node.table_count()
         return count
 
@@ -347,7 +416,7 @@ class Root(object):
         node = self._slots[ndx]
         if node is None:
             raise HamtNotFound
-        if node.is_leaf():
+        if node.is_leaf:
             if node.key == key:
                 self._slots[ndx] = None
             else:
@@ -373,7 +442,7 @@ class Root(object):
         node = self._slots[ndx]
 
         if node:
-            if node.is_leaf():
+            if node.is_leaf:
                 if node.key == key:
                     value = node.value
             else:
@@ -387,15 +456,20 @@ class Root(object):
         """ Insert a Leaf into or below the Root. """
 
         hcode = uhash(leaf.key)
-        ndx = hcode & self._mask
+        ndx = hcode & self._mask        # slot number
+        # DEBUG
+        print("insert_leaf: hcode 0x%x" % hcode)
+        print("             mask  0x%x" % self._mask)
+        print("             ndx   0x%x (%d)" % (ndx, ndx))
+        # END
         node = self._slots[ndx]
 
         if node is None:
             # the slot is empty
-            self._slots = leaf
+            self._slots[ndx] = leaf
         else:
             # there is something already in the slot
-            if node.is_leaf():
+            if node.is_leaf:
                 # it's a leaf; replace value iff the keys match
                 cur_key = node.key
                 new_key = leaf.key
@@ -410,8 +484,7 @@ class Root(object):
                             self._max_table_depth)
                     new_hcode = hcode >> self._texp    # hcode for new entry
 
-                    new_table = Table(1, self)
-                    new_table.insert_leaf(new_hcode, 2, leaf)   # XXX CHECK 2
+                    new_table = Table(1, self, leaf)
                     self._slots[ndx] = new_table
             else:
                 # it's a table
