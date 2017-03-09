@@ -5,6 +5,7 @@ then
   cd $DEV_BASE/py/hamt_py
   
   ./test_leaf.py
+  ./test_root.py
   
 else
   echo "DEV_BASE is not defined"

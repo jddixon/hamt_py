@@ -1,5 +1,8 @@
 py/hamt_py/CHANGES
 
+v0.1.1
+    2017-03-08
+        * skeletal test_root.py                                     SLOC  809
 v0.1.0
     2017-03-07
         * complete Table                                            SLOC  693
@@ -15,6 +18,7 @@ v0.0.2
 v0.0.1
     2017-03-02
         * initial commit
+
 
 
 

@@ -2,8 +2,8 @@
 project:hamt_py
 package:hamt
 mainlang:py
-version:0.0.1
-versionDate:2017-03-02
+version:0.1.0
+versionDate:2017-03-07
 :?dirs?:
 dir:std:ghpDoc
 dir:std:dist
@@ -39,4 +39,5 @@ bash:std:doPyLint
 bash:std:checkCoverage
 bash:std:bkp2u
 py:std:setup.py
-py:test:test_basics.py
+py:test:test_leaf.py
+py:test:test_root.py

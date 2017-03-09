@@ -1,2 +1,6 @@
 py/hamt_py/TODO
 
+2017-03-07
+    * texp = 0 should be an error
+    * wexp = 0 should be an error
+    * probably texp < wexp should be an error
