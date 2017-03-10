@@ -7,9 +7,10 @@
 #import os
 import time
 import unittest
+from binascii import b2a_hex
 
 from rnglib import SimpleRNG
-from hamt import Root, Table, Leaf, HamtError
+from hamt import Root, Table, Leaf, HamtError, uhash
 
 
 class TestRoot(unittest.TestCase):
@@ -26,6 +27,56 @@ class TestRoot(unittest.TestCase):
         key = bytes(self.rng.some_bytes(8))
         value = bytes(self.rng.some_bytes(16))
         return Leaf(key, value)
+
+    def make_a_leaf_cluster(self, nnn):
+        """
+        Make 2^nnn leafs with distinct keys and values.  If nnn <= texp,
+        these will fit into the root table.
+        """
+        if nnn > 8:
+            raise RuntimeError(
+                "THIS WON'T WORK: nnn is %d but may not exceed 8" % nnn)
+
+        key = self.rng.some_bytes(8)
+        value = self.rng.some_bytes(16)
+
+        leaves = []
+        count = 1 << nnn
+        mask = count - 1       # we want to mask off that many bits
+        shift = 8 - nnn         # number of bits to shift the mask
+        if nnn < 8:
+            mask <<= shift
+
+        # DEBUG
+        print("make_a_leaf_cluster: nnn %d, shift %d, mask 0x%x" % (
+            nnn, shift, mask))
+        # END
+
+        key = self.rng.some_bytes(8)
+        value = self.rng.some_bytes(16)
+
+        for ndx in range(count):
+            xxx = ndx << shift
+
+            mykey = bytearray(8)
+            mykey[:] = key              # local copy of key
+            myval = bytearray(16)
+            myval[:] = value            # local copy of value
+            mykey[0] &= ~mask
+            mykey[0] |= xxx
+            mykey = bytes(mykey)
+
+            myval[0] &= ~mask
+            myval[0] |= xxx
+            myval = bytes(myval)
+
+            leaf = Leaf(mykey, myval)
+            leaves.append(leaf)
+            # DEBUG
+            print("%3d key %s value %s" % (
+                ndx, b2a_hex(mykey), b2a_hex(myval)))
+            # END
+        return leaves
 
     # ---------------------------------------------------------------
 
@@ -57,17 +108,24 @@ class TestRoot(unittest.TestCase):
     def do_test_flat_root(self, wexp):
         """ Test insertions only into the root table for the value of wexp. """
 
-        texp = wexp + self.rng.next_int16(4)
+        texp = wexp     # we aren't interested in textp != wexp
         root = Root(wexp, texp)
-        self.assertEqual(root.leaf_count(), 0)
-        self.assertEqual(root.table_count(), 1)     # root table is counted
+        self.assertEqual(root.leaf_count, 0)
+        self.assertEqual(root.table_count, 1)     # root table is counted
 
-        # we make a random Leaf
-        leaf = self.make_a_leaf()
-        # and add it to the Root
-        root.insert_leaf(leaf)
-        self.assertEqual(root.leaf_count(), 1)      # we have added one leaf
-        self.assertEqual(root.table_count(), 1)     # just the root table
+        leaves = self.make_a_leaf_cluster(texp)     # 2^text unique Leafs
+        inserted = 0
+        ndxes = []
+        for leaf in leaves:
+            ndx = uhash(leaf.key) & root.mask
+            if not ndx in ndxes:
+                root.insert_leaf(leaf)
+                inserted += 1
+                ndxes.append(ndx)
+                self.assertEqual(root.leaf_count, inserted)
+                self.assertEqual(root.table_count, 1)
+
+        # WORKING HERE ?
 
     def test_flat_root(self):
         """

@@ -6,8 +6,8 @@ import sys
 
 from xlutil import popcount64
 
-__version__ = '0.1.1'
-__version_date__ = '2017-03-08'
+__version__ = '0.1.2'
+__version_date__ = '2017-03-10'
 
 __all__ = ['__version__', '__version_date__',
            'MAX_W',
@@ -20,6 +20,17 @@ __all__ = ['__version__', '__version_date__',
 MAX_W = 6
 
 # FUNCTIONS
+
+
+def bytes_equal(aaa, bbb):
+    if not (isinstance(aaa, bytes) and isinstance(bbb, bytes)):
+        return False
+    if len(aaa) == 0 or len(aaa) != len(bbb):
+        return False
+    for ndx, aval in enumerate(aaa):
+        if aval != bbb[ndx]:
+            return False
+    return True
 
 
 def uhash(val):
@@ -67,8 +78,9 @@ class Leaf(object):
 
 class Table(object):
     """
-    Table with a fixed number of slots.
+    Table with a dynamic number of entries.
 
+    The number of slots may grow to to a maximum of (1 << wexp).
     Each slot is either empty or points to either a Leaf or another Table.
 
     Unlike the Go version, a hamt_py Table can only be created if its
@@ -94,16 +106,25 @@ class Table(object):
         self._wexp = wexp
         self._texp = texp
         self._root = root
-        wflag = 1 << wexp            # seen a uint64
+        wflag = 1 << wexp            # seen as uint64
         self._mask = wflag - 1       # ditto
-        self._slots = [None] * wflag
 
         shift_count = texp + (depth - 1) * wexp
         hcode = uhash(first_leaf.key) >> shift_count
         ndx = hcode & self._mask
-        flag = 1 << ndx             # see as uint64
-        self._slots[ndx] = first_leaf
+        flag = 1 << ndx             # seen as uint64
+        self._slots = [first_leaf]
         self._bitmap = flag         # seen as uint64
+        # DEBUG
+        print("new Table:      depth  = %d" % depth)
+        print("                texp   = %d" % texp)
+        print("                wexp   = %d" % wexp)
+        print("                wflag  = %d" % wflag)
+        print("                mask   = %d" % self._mask)
+        print("    first leaf: ndx    = %d (0x%x)" % (ndx, ndx))
+        print("                flag   = 0x%x" % flag)
+        print("    Table:      bitmap = 0x%x" % self._bitmap)
+        # END
 
     @property
     def root(self):
@@ -145,18 +166,30 @@ class Table(object):
         """
         return 1 << self._wexp
 
+    @property
     def leaf_count(self):
         """ Return a count of the leaf nodes in this Table, recursing. """
         count = 0
-        for node in self._slots:
+        # for node in self._slots:
+        for ndx, node in enumerate(self._slots):
             if node:
                 if node.is_leaf:
                     count += 1
+                    # DEBUG
+                    print("slot %3d is Leaf" % ndx)
+                    # END
                 else:
+                    # DEBUG
+                    print("slot %3d is Table" % ndx)
+                    # END
                     # regarding the node as a Table:
-                    count += node.table_count()
+                    count += node.table_count
+        # DEBUG
+        print("Table.leaf_count returning %d" % count)
+        # END
         return count
 
+    @property
     def table_count(self):
         """
         Return a count of Table nodes below this Table (or Root),
@@ -165,7 +198,7 @@ class Table(object):
         count = 1       # this Table
         for node in self._slots:
             if node and not node.is_leaf:
-                count += node.table_count()
+                count += node.table_count
         return count
 
     def remove_from_slots(self, offset):
@@ -275,14 +308,29 @@ class Table(object):
         mask = flag - 1
         if mask:
             slot_nbr = popcount64(self._bitmap & mask)
-        slotcount = len(self._slots)
-        if slotcount == 0:
-            self._slots = []
+        slice_size = len(self._slots)
+        # DEBUG
+        print("Table.insert_leaf: depth      = %d" % depth)
+        print("                   slot_nbr   = %d" % slot_nbr)
+        print("                   ndx        = 0x%x" % ndx)
+        print("                   flag       = 0x%x" % flag)
+        print("                   mask       = 0x%x" % mask)
+        print("                   slice_size = %d" % slice_size)
+        # END
+
+        if slice_size == 0:
+            slice_size = 1 << self._wexp
+            self._slots = [None] * self._wexp
+            self._slots[ndx] = leaf
             self._bitmap |= flag
         else:
             # is there already something in this slot?
             if self._bitmap & flag:
                 entry = self._slots[slot_nbr]
+                if entry is None:
+                    print("INTERNAL ERROR: flag=%d, slot=%d is empty" % (
+                        flag, slot_nbr))
+
                 if entry.is_leaf:
                     if entry.key == leaf.key:
                         # keys match so replace value
@@ -309,7 +357,7 @@ class Table(object):
             elif slot_nbr == 0:
                 self._slots = [leaf] + self._slots
                 self._bitmap |= flag
-            elif slot_nbr == slotcount:
+            elif slot_nbr == slice_size:
                 self._slots += leaf
                 self._bitmap |= flag
             else:
@@ -323,7 +371,13 @@ class Table(object):
 
 
 class Root(object):
-    """ Root table of a HAMT Trie. """
+    """
+    Root table of a HAMT Trie.
+
+    The Root has a fixed number of slots, each of which may be empty
+    or may point to a Table or a Leaf.  There are (1 << texp) slots
+    in the Root table.
+    """
 
     def __init__(self, wexp, texp):
         if wexp < 2:
@@ -386,18 +440,32 @@ class Root(object):
         """ Return the slots table for the Root. """
         return self._slots
 
+    @property
     def leaf_count(self):
         """ Return a count of leaf nodes under the Root. """
         count = 0
-        for node in self._slots:
+        # for node in self._slots:
+        for ndx, node in enumerate(self._slots):
             if node:
                 if node.is_leaf:
                     count += 1
+                    # DEBUG
+                    print("root slot %3d is Leaf" % ndx)
+                    # END
                 else:
+                    # DEBUG
+                    print("root slot %3d is Table" % ndx)
+                    # END
                     # recurse
-                    count += node.leaf_count()
+                    count += node.leaf_count
+        # DEBUG
+            # else:
+            #    print("root slot %03d is EMPTY" % ndx)
+        print("             returning Root leaf count %d" % count)
+        # END
         return count
 
+    @property
     def table_count(self):
         """
         Return a count of Tables under the Root, including the Root itself.
@@ -405,7 +473,7 @@ class Root(object):
         count = 1       # the Root
         for node in self._slots:
             if node and not node.is_leaf:
-                count += node.table_count()
+                count += node.table_count
         return count
 
     def delete_leaf(self, key):
@@ -475,6 +543,9 @@ class Root(object):
                 new_key = leaf.key
                 if cur_key == new_key:
                     # keys match
+                    # DEBUG
+                    print("Root.insert_leaf: keys match, so overwriting val")
+                    # END
                     node.value = leaf.value
                 else:
                     # keys differ, so we replace node with a Table
@@ -484,9 +555,17 @@ class Root(object):
                             self._max_table_depth)
                     new_hcode = hcode >> self._texp    # hcode for new entry
 
+                    # DEBUG
+                    print("Root.insert_leaf: keys differ, replacing with Table")
+                    # END
+
                     new_table = Table(1, self, leaf)
+                    new_table.insert_leaf(new_hcode, 1, node)
                     self._slots[ndx] = new_table
             else:
+                # DEBUG
+                print("Root.insert_leaf: node is Table")
+                # END
                 # it's a table
                 if self._max_table_depth < 1:
                     raise HamtError(
