@@ -1,5 +1,8 @@
 py/hamt_py/CHANGES
 
+v0.1.3
+    2017-03-11
+        * improved test_root, rough test_table                      SLOC  989
 v0.1.2
     2017-03-10
         * test_root.py succeeds                                     SLOC  905
@@ -21,6 +24,7 @@ v0.0.2
 v0.0.1
     2017-03-02
         * initial commit
+
 
 
 

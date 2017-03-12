@@ -6,8 +6,8 @@ import sys
 
 from xlutil import popcount64
 
-__version__ = '0.1.2'
-__version_date__ = '2017-03-10'
+__version__ = '0.1.3'
+__version_date__ = '2017-03-11'
 
 __all__ = ['__version__', '__version_date__',
            'MAX_W',
@@ -397,11 +397,11 @@ class Root(object):
         self._mask = flag - 1
         self._slots = [None] * flag
         # DEBUG
-        print("Root: wexp            %d" % wexp)
-        print("      texp            %d" % texp)
-        print("      max table depth %d" % self.max_table_depth)
-        print("      slot count      %d" % flag)
-        print("      mask            0x%x" % self._mask)
+        #print("Root: wexp            %d" % wexp)
+        #print("      texp            %d" % texp)
+        #print("      max table depth %d" % self.max_table_depth)
+        #print("      slot count      %d" % flag)
+        #print("      mask            0x%x" % self._mask)
         # END
 
     @property
@@ -450,18 +450,18 @@ class Root(object):
                 if node.is_leaf:
                     count += 1
                     # DEBUG
-                    print("root slot %3d is Leaf" % ndx)
+                    #print("root slot %3d is Leaf" % ndx)
                     # END
                 else:
                     # DEBUG
-                    print("root slot %3d is Table" % ndx)
+                    #print("root slot %3d is Table" % ndx)
                     # END
                     # recurse
                     count += node.leaf_count
         # DEBUG
             # else:
             #    print("root slot %03d is EMPTY" % ndx)
-        print("             returning Root leaf count %d" % count)
+        # print("             returning Root leaf count %d" % count)
         # END
         return count
 
@@ -500,11 +500,11 @@ class Root(object):
     def find_leaf(self, key):
         """
         Given a properly shifted hashcode and the key for an entry,
-        return the value associated with the key or None if there
-        is no such value.
+        return the entry associated with the key or None if there
+        is no such entry.
         """
 
-        value = None
+        entry = None
         hcode = uhash(key)
         ndx = hcode & self._mask
         node = self._slots[ndx]
@@ -512,13 +512,13 @@ class Root(object):
         if node:
             if node.is_leaf:
                 if node.key == key:
-                    value = node.value
+                    entry = node
             else:
                 if self._max_table_depth > 0:
                     # it's a Table, so recurse
                     hcode >>= self._texp
-                    value = node.find_leaf(hcode, 1, key)
-        return value
+                    entry = node.find_leaf(hcode, 1, key)
+        return entry
 
     def insert_leaf(self, leaf):
         """ Insert a Leaf into or below the Root. """
@@ -526,9 +526,9 @@ class Root(object):
         hcode = uhash(leaf.key)
         ndx = hcode & self._mask        # slot number
         # DEBUG
-        print("insert_leaf: hcode 0x%x" % hcode)
-        print("             mask  0x%x" % self._mask)
-        print("             ndx   0x%x (%d)" % (ndx, ndx))
+        #print("insert_leaf: hcode 0x%x" % hcode)
+        #print("             mask  0x%x" % self._mask)
+        #print("             ndx   0x%x (%d)" % (ndx, ndx))
         # END
         node = self._slots[ndx]
 
