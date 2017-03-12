@@ -6,6 +6,7 @@ then
   
   ./test_leaf.py
   ./test_root.py
+  ./test_table.py
   
 else
   echo "DEV_BASE is not defined"

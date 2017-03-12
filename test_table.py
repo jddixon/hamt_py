@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-# hamt_py/test_root.py
+# hamt_py/test_table.py
 
-""" Test properties of the HAMT Root. """
+""" Test properties of the HAMT Table. """
 
 #import hashlib
 #import os
@@ -13,20 +13,14 @@ from rnglib import SimpleRNG
 from hamt import Root, Table, Leaf, HamtError, uhash
 
 
-class TestRoot(unittest.TestCase):
-    """ Test properties of the HAMT Root. """
+class TestTable(unittest.TestCase):
+    """ Test properties of the HAMT Table. """
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
 
     def tearDown(self):
         pass
-
-    def make_a_leaf(self):
-        """ Create a Leaf with quasi-random key and value. """
-        key = bytes(self.rng.some_bytes(8))
-        value = bytes(self.rng.some_bytes(16))
-        return Leaf(key, value)
 
     def make_a_leaf_cluster(self, nnn):
         """
@@ -81,7 +75,7 @@ class TestRoot(unittest.TestCase):
     # ---------------------------------------------------------------
 
     def do_test_root_ctor(self, wexp):
-        """ Test Root constructor with specific parameters. """
+        """ Test Table constructor with specific parameters. """
 
         texp = wexp + self.rng.next_int16(4)
         root = Root(wexp, texp)
@@ -106,7 +100,7 @@ class TestRoot(unittest.TestCase):
     # ---------------------------------------------------------------
 
     def do_test_flat_root(self, wexp):
-        """ Test insertions only into the root table for the value of wexp. """
+        """ XXX RETHINK, THEN REWRITE. """
 
         texp = wexp     # we aren't interested in textp != wexp
         root = Root(wexp, texp)
@@ -124,9 +118,17 @@ class TestRoot(unittest.TestCase):
                 ndxes.append(ndx)
                 self.assertEqual(root.leaf_count, inserted)
                 self.assertEqual(root.table_count, 1)
+                # XX FIND RETURNS ENTRY
                 found = root.find_leaf(leaf.key)
                 self.assertEqual(found.key, leaf.key)
+                # VERIFY THAT IT'S A LEAF
                 self.assertTrue(found.is_leaf)
+
+        # we have successfully inserted that many leaf nodes into the
+        # root table.
+        self.assertEqual(root.leaf_count, inserted)
+
+        # WORKING HERE ?
 
     def test_flat_root(self):
         """
