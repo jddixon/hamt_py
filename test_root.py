@@ -120,9 +120,8 @@ class TestRoot(unittest.TestCase):
                 ndxes.append(ndx)
                 self.assertEqual(root.leaf_count, inserted)
                 self.assertEqual(root.table_count, 1)
-                entry = root.find_leaf(leaf.key)
-                self.assertEqual(entry.key, leaf.key)
-                self.assertTrue(entry.is_leaf)
+                value = root.find_leaf(leaf.key)
+                self.assertEqual(value, leaf.value)
 
     def test_flat_root(self):
         """

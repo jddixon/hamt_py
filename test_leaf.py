@@ -40,7 +40,7 @@ class TestLeaf(unittest.TestCase):
         self.assertEqual(leaf.key, key)
         self.assertEqual(leaf.value, value)
 
-        self.assertTrue(leaf.is_leaf)
+        self.assertTrue(isinstance(leaf, Leaf))
 
 if __name__ == '__main__':
     unittest.main()

@@ -106,9 +106,9 @@ class TestTable(unittest.TestCase):
                 slot_nbrs.append(slot_nbr)
                 self.assertEqual(root.leaf_count, inserted)
                 self.assertEqual(root.table_count, 1)
-                entry = root.find_leaf(leaf.key)
-                self.assertEqual(entry.key, leaf.key)
-                self.assertTrue(entry.is_leaf)
+                value = root.find_leaf(leaf.key)
+                self.assertEqual(value, leaf.value)
+
                 by_keys[leaf.key] = leaf
 
         # we have successfully inserted that many leaf nodes into the

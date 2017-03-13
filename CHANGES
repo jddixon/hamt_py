@@ -1,5 +1,8 @@
 py/hamt_py/CHANGES
 
+v0.1.5
+    2017-03-13
+        * simple tets_table.py succeeds                             SLOC 1015
 v0.1.4
     2017-03-12
         * improved test_root, less rough test_table                 SLOC 1007
@@ -27,6 +30,7 @@ v0.0.2
 v0.0.1
     2017-03-02
         * initial commit
+
 
 
 
