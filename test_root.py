@@ -22,52 +22,48 @@ class TestRoot(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def make_a_leaf(self):
-        """ Create a Leaf with quasi-random key and value. """
-        key = bytes(self.rng.some_bytes(8))
-        value = bytes(self.rng.some_bytes(16))
-        return Leaf(key, value)
+    MAX_T = 8
 
-    def make_a_leaf_cluster(self, nnn):
+    def make_a_leaf_cluster(self, texp):
         """
-        Make 2^nnn leafs with distinct keys and values.  If nnn <= texp,
-        these will fit into the root table.
+        Make 1 << texp leafs with distinct keys and values.
         """
-        if nnn > 8:
+        if texp > TestRoot.MAX_T:
             raise RuntimeError(
-                "THIS WON'T WORK: nnn is %d but may not exceed 8" % nnn)
+                "THIS WON'T WORK: texp is %d but may not exceed MAX_T=%d" % (
+                    texp, TestRoot.MAX_T))
 
         key = self.rng.some_bytes(8)
         value = self.rng.some_bytes(16)
 
         leaves = []
-        count = 1 << nnn
+        count = 1 << texp
         mask = count - 1       # we want to mask off that many bits
-        shift = 8 - nnn         # number of bits to shift the mask
-        if nnn < 8:
+        shift = 8 - texp       # number of bits to shift the mask
+        if texp < 8:
             mask <<= shift
 
         # DEBUG
-        # print("make_a_leaf_cluster: nnn %d, shift %d, mask 0x%x" % (
-        #    nnn, shift, mask))
+        # print("make_a_leaf_cluster: texp %d, shift %d, mask 0x%x" % (
+        #    texp, shift, mask))
         # END
 
         key = self.rng.some_bytes(8)
         value = self.rng.some_bytes(16)
 
         for ndx in range(count):
-            xxx = ndx << shift
+            slot_nbr = ndx << shift
 
             mykey = bytearray(8)
             mykey[:] = key              # local copy of key
             myval = bytearray(16)
             myval[:] = value            # local copy of value
             mykey[0] &= ~mask
-            mykey[0] |= xxx
+            mykey[0] |= slot_nbr
             mykey = bytes(mykey)
 
             myval[0] &= ~mask
-            myval[0] |= xxx
+            myval[0] |= slot_nbr
             myval = bytes(myval)
 
             leaf = Leaf(mykey, myval)
@@ -108,12 +104,12 @@ class TestRoot(unittest.TestCase):
     def do_test_flat_root(self, wexp):
         """ Test insertions only into the root table for the value of wexp. """
 
-        texp = wexp     # we aren't interested in textp != wexp
+        texp = wexp     # we aren't interested in texp != wexp
         root = Root(wexp, texp)
         self.assertEqual(root.leaf_count, 0)
         self.assertEqual(root.table_count, 1)     # root table is counted
 
-        leaves = self.make_a_leaf_cluster(texp)     # 2^text unique Leafs
+        leaves = self.make_a_leaf_cluster(texp)     # 1 << texp unique Leafs
         inserted = 0
         ndxes = []
         for leaf in leaves:
@@ -124,9 +120,9 @@ class TestRoot(unittest.TestCase):
                 ndxes.append(ndx)
                 self.assertEqual(root.leaf_count, inserted)
                 self.assertEqual(root.table_count, 1)
-                found = root.find_leaf(leaf.key)
-                self.assertEqual(found.key, leaf.key)
-                self.assertTrue(found.is_leaf)
+                entry = root.find_leaf(leaf.key)
+                self.assertEqual(entry.key, leaf.key)
+                self.assertTrue(entry.is_leaf)
 
     def test_flat_root(self):
         """

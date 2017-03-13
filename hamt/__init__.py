@@ -6,8 +6,8 @@ import sys
 
 from xlutil import popcount64
 
-__version__ = '0.1.3'
-__version_date__ = '2017-03-11'
+__version__ = '0.1.4'
+__version_date__ = '2017-03-12'
 
 __all__ = ['__version__', '__version_date__',
            'MAX_W',
@@ -267,14 +267,22 @@ class Table(object):
 
         The hashcode has been shifted appropriately for the current
         depth (zero-based).  Return None if no matching entry is found
-        or the value associated with the key.
+        or the entry associated with the key.
 
         The caller guarantees that depth <= Root.max_table.depth.
         """
 
-        value = None
-        ndx = hcode & self._mask    # uint
-        flag = 1 << ndx             # uint64
+        entry = None
+        slot_nbr = hcode & self._mask    # uint
+        flag = 1 << slot_nbr             # uint64
+
+        # DEBUG
+        print("Table.find_leaf:")
+        print("    depth    %d" % depth)
+        print("    slot_nbr %d " % slot_nbr)
+        print("    flag     0x%x " % flag)
+        print("    bitmap   0x%x " % self._bitmap)
+        # END
 
         if self._bitmap & flag:
             # the node is present
@@ -283,16 +291,21 @@ class Table(object):
             if mask:
                 slot_nbr = popcount64(self._bitmap & mask)
             node = self._slots[slot_nbr]
-            if node.is_leaf:
+            if isinstance(node, Leaf):
                 if key == node.key:
-                    value = node.value
+                    entry = node.entry
             else:
                 # node is a Table, so recurse
                 depth += 1
                 if depth <= self.root.max_table_depth:
                     hcode += self._wexp
-                    value = node.findLeaf(hcode, depth, key)
-        return value
+                    entry = node.find_leaf(hcode, depth, key)
+        # DEBUG
+        else:
+            print("Table.find_leaf:  depth %d: slot_nbr %d is empty" % (
+                depth, slot_nbr))
+        # END
+        return entry
 
     def insert_leaf(self, hcode, depth, leaf):
         """
@@ -510,14 +523,14 @@ class Root(object):
         node = self._slots[ndx]
 
         if node:
-            if node.is_leaf:
+            if isinstance(node, Leaf):
                 if node.key == key:
                     entry = node
             else:
                 if self._max_table_depth > 0:
                     # it's a Table, so recurse
                     hcode >>= self._texp
-                    entry = node.find_leaf(hcode, 1, key)
+                    entry = node.find_leaf(hcode >> self.texp, 1, key)
         return entry
 
     def insert_leaf(self, leaf):
