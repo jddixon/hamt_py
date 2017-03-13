@@ -22,120 +22,120 @@ class TestTable(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def make_a_leaf_cluster(self, nnn):
+    def make_a_unique_leaf(self, by_keys):
         """
-        Make 2^nnn leafs with distinct keys and values.  If nnn <= texp,
-        these will fit into the root table.
+        Make a leaf node with quesi-random key and value.
+
+        The Leaf returned is guaranteed to have a key not already in
+        by_keys.
         """
-        if nnn > 8:
+
+        key = bytes(self.rng.some_bytes(8))
+        value = bytes(self.rng.some_bytes(16))
+        while key in by_keys:
+            key = bytes(self.rng.some_bytes(8))
+
+        return Leaf(key, value)
+
+    def make_a_leaf_cluster(self, texp):
+        """
+        Make 1 << Leafs with distinct keys and values.
+        """
+        if texp > 8:
             raise RuntimeError(
-                "THIS WON'T WORK: nnn is %d but may not exceed 8" % nnn)
+                "THIS WON'T WORK: texp is %d but may not exceed 8" % texp)
 
         key = self.rng.some_bytes(8)
         value = self.rng.some_bytes(16)
 
         leaves = []
-        count = 1 << nnn
+        count = 1 << texp
         mask = count - 1       # we want to mask off that many bits
-        shift = 8 - nnn         # number of bits to shift the mask
-        if nnn < 8:
+        shift = 8 - texp         # number of bits to shift the mask
+        if texp < 8:
             mask <<= shift
-
-        # DEBUG
-        # print("make_a_leaf_cluster: nnn %d, shift %d, mask 0x%x" % (
-        #    nnn, shift, mask))
-        # END
 
         key = self.rng.some_bytes(8)
         value = self.rng.some_bytes(16)
 
         for ndx in range(count):
-            xxx = ndx << shift
+            slot_nbr = ndx << shift
 
             mykey = bytearray(8)
             mykey[:] = key              # local copy of key
             myval = bytearray(16)
             myval[:] = value            # local copy of value
             mykey[0] &= ~mask
-            mykey[0] |= xxx
+            mykey[0] |= slot_nbr
             mykey = bytes(mykey)
 
             myval[0] &= ~mask
-            myval[0] |= xxx
+            myval[0] |= slot_nbr
             myval = bytes(myval)
 
             leaf = Leaf(mykey, myval)
             leaves.append(leaf)
-            # DEBUG
-            # print("%3d key %s value %s" % (
-            #    ndx, b2a_hex(mykey), b2a_hex(myval)))
-            # END
         return leaves
 
     # ---------------------------------------------------------------
 
-    def do_test_root_ctor(self, wexp):
-        """ Test Table constructor with specific parameters. """
-
-        texp = wexp + self.rng.next_int16(4)
-        root = Root(wexp, texp)
-        self.assertIsNotNone(root)
-        self.assertEqual(root.wexp, wexp)
-        self.assertEqual(root.texp, texp)
-        self.assertEqual(root.max_table_depth, (64 - texp) // wexp)
-
-        self.assertIsNotNone(root.slots)
-        self.assertEqual(len(root.slots), 1 << texp)     # 0)
-
-        self.assertEqual(root.slot_count, 1 << texp)
-        self.assertEqual(root.mask, root.slot_count - 1)
-
-    def test_ctor(self):
+    def do_test_full_root(self, texp):
         """
-        Test constructor functionality with a range of parameters.
+        Test behavior of tree with (nearly) full root with 1 << texp entries.
+
+        We make enough entries to fill the root, then add them one by one.
+        If an entry has the same slot number as a previously inserted entry,
+        we discard it.
         """
-        for wexp in [3, 4, 5, 6]:
-            self.do_test_root_ctor(wexp)
 
-    # ---------------------------------------------------------------
-
-    def do_test_flat_root(self, wexp):
-        """ XXX RETHINK, THEN REWRITE. """
-
-        texp = wexp     # we aren't interested in textp != wexp
+        wexp = texp     # we aren't yet interested in wexp != texp
+        slot_count = 1 << texp
         root = Root(wexp, texp)
         self.assertEqual(root.leaf_count, 0)
         self.assertEqual(root.table_count, 1)     # root table is counted
 
-        leaves = self.make_a_leaf_cluster(texp)     # 2^text unique Leafs
+        leaves = self.make_a_leaf_cluster(texp)     # <= 1 << texp unique Leafs
         inserted = 0
-        ndxes = []
+        slot_nbrs = []  # list of slot numbers of occupied slots
+        by_keys = {}    # Leafs indexed by key
         for leaf in leaves:
-            ndx = uhash(leaf.key) & root.mask
-            if not ndx in ndxes:
+            slot_nbr = uhash(leaf.key) & root.mask
+            if not slot_nbr in slot_nbrs:
                 root.insert_leaf(leaf)
                 inserted += 1
-                ndxes.append(ndx)
+                slot_nbrs.append(slot_nbr)
                 self.assertEqual(root.leaf_count, inserted)
                 self.assertEqual(root.table_count, 1)
-                # XX FIND RETURNS ENTRY
-                found = root.find_leaf(leaf.key)
-                self.assertEqual(found.key, leaf.key)
-                # VERIFY THAT IT'S A LEAF
-                self.assertTrue(found.is_leaf)
+                entry = root.find_leaf(leaf.key)
+                self.assertEqual(entry.key, leaf.key)
+                self.assertTrue(entry.is_leaf)
+                by_keys[leaf.key] = leaf
 
         # we have successfully inserted that many leaf nodes into the
         # root table.
         self.assertEqual(root.leaf_count, inserted)
+        self.assertEqual(len(by_keys), inserted)
 
-        # WORKING HERE ?
+        # DEBUG
+        print("There are %d/%d entries in the root table." % (
+            len(slot_nbrs), slot_count))
+        # END
 
-    def test_flat_root(self):
+        leaf = self.make_a_unique_leaf(by_keys)
+        # this will either be inserted into the root table or into a
+        # new table in a root table slot
+        root.insert_leaf(leaf)
+        inserted += 1
+        entry = root.find_leaf(leaf.key)
+        self.assertIsNotNone(entry)
+
+    def test_full_root(self):
         """
-        Test constructor functionality with a range of parameters.
+        Test behavior with full roots of various sizes.
+
         """
-        for wexp in [3, 4, 5, 6]:
-            self.do_test_flat_root(wexp)
+        for texp in [3, 4, 5, 6]:
+            self.do_test_full_root(texp)
 
 
 if __name__ == '__main__':
