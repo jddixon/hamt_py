@@ -4,7 +4,8 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/hamt_py
   
-  autopep8 -ai -r hamt *.py
+  autopep8 -ai -r hamt
+  autopep8 -ai *.py
   
 else
   echo "DEV_BASE is not defined"

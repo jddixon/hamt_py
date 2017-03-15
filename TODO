@@ -1,5 +1,17 @@
 py/hamt_py/TODO
 
+2017-03-15
+    * correct implementation of Table.delete_leaf()
+    * test it
+    * test Root.delete_leaf()
+    
+    CONSIDER THE FOLLOWING:
+    * specify Table.delete_table() 
+    * test it
+    * specify Root.delete_table() 
+    * test it
+
+
 2017-03-07
     * texp = 0 should be an error                                   * FIXED
     * wexp = 0 should be an error                                   * FIXED

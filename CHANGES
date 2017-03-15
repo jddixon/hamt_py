@@ -1,5 +1,8 @@
 py/hamt_py/CHANGES
 
+v0.1.7
+    2017-03-15
+        * clean up, pylint code; fiddle with tests                  SLOC 1072
 v0.1.6
     2017-03-14
         * add test_with_matching_keys: all tests succeed            SLOC 1072
@@ -33,6 +36,7 @@ v0.0.2
 v0.0.1
     2017-03-02
         * initial commit
+
 
 
 

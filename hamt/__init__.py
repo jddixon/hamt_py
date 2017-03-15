@@ -7,8 +7,8 @@ from binascii import b2a_hex
 
 from xlutil import popcount64
 
-__version__ = '0.1.6'
-__version_date__ = '2017-03-14'
+__version__ = '0.1.7'
+__version_date__ = '2017-03-15'
 
 __all__ = ['__version__', '__version_date__',
            'MAX_W',
@@ -21,17 +21,6 @@ __all__ = ['__version__', '__version_date__',
 MAX_W = 6
 
 # FUNCTIONS
-
-
-def bytes_equal(aaa, bbb):
-    if not (isinstance(aaa, bytes) and isinstance(bbb, bytes)):
-        return False
-    if len(aaa) == 0 or len(aaa) != len(bbb):
-        return False
-    for ndx, aval in enumerate(aaa):
-        if aval != bbb[ndx]:
-            return False
-    return True
 
 
 def uhash(val):
@@ -109,9 +98,9 @@ class Table(object):
         wexp, texp = Table.check_table_param(depth, root)
         self._wexp = wexp
         self._texp = texp
-        self._root = root
-        wflag = 1 << wexp            # seen as uint64
-        self._mask = wflag - 1       # ditto
+        self._root = root           # so we can determine max_table_depth
+        wflag = 1 << wexp           # seen as uint64
+        self._mask = wflag - 1      # ditto
 
         # insert the first leaf
         shift_count = texp + (depth - 1) * wexp
@@ -160,10 +149,12 @@ class Table(object):
 
     @property
     def slots(self):
+        """ Return a list of slots in use. """
         return self._slots
 
     @property
     def bitmap(self):
+        """ Return a bitmap with the Nth bit set to 1 if slot N is in use. """
         return self._bitmap
 
     @property
@@ -179,13 +170,10 @@ class Table(object):
         """ Return a count of the leaf nodes in this Table, recursing. """
         count = 0
         # for node in self._slots:
-        for ndx, node in enumerate(self._slots):
+        for node in self._slots:
             if node:
                 if isinstance(node, Leaf):
                     count += 1
-                    # DEBUG
-                    # print("slot %3d is Leaf" % ndx)
-                    # END
                 elif isinstance(node, Table):
                     count += node.leaf_count
         # DEBUG
@@ -329,14 +317,14 @@ class Table(object):
 
     def insert_leaf(self, hcode, leaf):
         """
-        Enter with hcode having been shifted so that the high-order wexp bits
+        Enter with hcode having been shifted so that the low-order wexp bits
         determine ndx, the index of the bit to be set`.
 
         The caller guarantees that depth <= self.root.max_table_depth.
         """
 
         slot_nbr = 0
-        ndx = hcode & self._mask    # mask off wdx high-order bits
+        ndx = hcode & self._mask    # mask off wdx low-order bits
         flag = 1 << ndx             # uint64
         mask = flag - 1
         if mask:
@@ -474,7 +462,7 @@ class Root(object):
         """ Return a count of leaf nodes under the Root. """
         count = 0
         # for node in self._slots:
-        for ndx, node in enumerate(self._slots):
+        for node in self._slots:
             if node:
                 if isinstance(node, Leaf):
                     count += 1
@@ -506,7 +494,7 @@ class Root(object):
 
         hcode = uhash(key)
         ndx = hcode & self._mask
-        node = self._slots[ndx]         # XXX WRONG
+        node = self._slots[ndx]
         if node is None:
             raise HamtNotFound
         if isinstance(node, Leaf):
@@ -593,10 +581,7 @@ class Root(object):
 
                     new_table = Table(1, self, node)
                     self._slots[ndx] = new_table
-                    cur_hcode = uhash(cur_key) >> self._texp
-                    new_table.insert_leaf(
-                        uhash(leaf.key) >> self._texp,
-                        leaf)
+                    new_table.insert_leaf(uhash(leaf.key) >> self._texp, leaf)
 
             else:
                 # DEBUG
