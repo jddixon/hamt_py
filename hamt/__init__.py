@@ -7,8 +7,8 @@ from binascii import b2a_hex
 
 from xlutil import popcount64
 
-__version__ = '0.1.5'
-__version_date__ = '2017-03-13'
+__version__ = '0.1.6'
+__version_date__ = '2017-03-14'
 
 __all__ = ['__version__', '__version_date__',
            'MAX_W',
@@ -71,11 +71,6 @@ class Leaf(object):
         """ Return the value pointed at by a HAMT Leaf. """
         return self._value
 
-#    @property
-#    def is_leaf(self):
-#        """ Return whether this Leaf is indeed a Leaf. """
-#        return True
-
 
 class Table(object):
     """
@@ -88,6 +83,8 @@ class Table(object):
     first leaf is specified.  That is, __init__() below is equivalent to
     Go hamt_go's NewTableWithLeaf.
     """
+
+    last_nbr = -1
 
     @staticmethod
     def check_table_param(depth, root):  # -> (int, int)
@@ -103,7 +100,12 @@ class Table(object):
         return wexp, texp           # Seen as unsigned ints
 
     def __init__(self, depth, root, first_leaf):
+
+        Table.last_nbr += 1
+        self._nbr = Table.last_nbr
+
         # set up the table
+        self._depth = depth
         wexp, texp = Table.check_table_param(depth, root)
         self._wexp = wexp
         self._texp = texp
@@ -120,17 +122,17 @@ class Table(object):
         self._bitmap = flag         # set bit for this entry
 
         # DEBUG
-        print("new Table:      depth  = %d" % depth)
-        print("                texp   = %d" % texp)
-        print("                wexp   = %d" % wexp)
-        print("                wflag  = %d (0x%x)" % (wflag, wflag))
-        print("                mask   = 0x%x" % self._mask)
-        print("    first leaf: hcode  = 0x%x" % hcode)
-        print("                ndx    = %d (0x%x)" % (ndx, ndx))
-        print("                flag   = %d (0x%x)" % (flag, flag))
-        print("    Table:      bitmap = 0x%x" % self._bitmap)
-        print()
-        # END
+#       print("new Table[%d]:  depth  = %d" % (self._nbr, depth))
+#       print("                texp   = %d" % texp)
+#       print("                wexp   = %d" % wexp)
+#       print("                wflag  = %d (0x%x)" % (wflag, wflag))
+#       print("                mask   = 0x%x" % self._mask)
+#       print("    first leaf: hcode  = 0x%x" % hcode)
+#       print("                ndx    = %d (0x%x)" % (ndx, ndx))
+#       print("                flag   = %d (0x%x)" % (flag, flag))
+#       print("    Table[%d]:  bitmap = 0x%x" % (self._nbr, self._bitmap))
+#       print()
+#       # END
 
     @property
     def root(self):
@@ -179,27 +181,23 @@ class Table(object):
         # for node in self._slots:
         for ndx, node in enumerate(self._slots):
             if node:
-                if instance(node, Leaf):
+                if isinstance(node, Leaf):
                     count += 1
                     # DEBUG
-                    print("slot %3d is Leaf" % ndx)
+                    # print("slot %3d is Leaf" % ndx)
                     # END
-                else:
-                    # DEBUG
-                    print("slot %3d is Table" % ndx)
-                    # END
-                    # regarding the node as a Table:
-                    count += node.table_count
+                elif isinstance(node, Table):
+                    count += node.leaf_count
         # DEBUG
-        print("Table.leaf_count returning %d" % count)
+#       print("Table[%d].leaf_count, depth %d, returning %d" % (
+#           self._nbr, self._depth, count))
         # END
         return count
 
     @property
     def table_count(self):
         """
-        Return a count of Table nodes below this Table (or Root),
-        including this Table.
+        Return a count of Table nodes below this Table, including this Table.
         """
         count = 1       # this Table
         for node in self._slots:
@@ -285,13 +283,13 @@ class Table(object):
         flag = 1 << ndx             # uint64
 
         # DEBUG
-        print("Table.find_leaf:")
-        print("    depth    %d" % depth)
-        print("    hcode    0x%x" % hcode)
-        print("    mask     0x%x" % self._mask)
-        print("    ndx      %d " % ndx)
-        print("    flag     0x%x " % flag)
-        print("    bitmap   0x%x " % self._bitmap)
+#       print("Table[%d].find_leaf:" % self._nbr)
+#       print("    depth    %d" % depth)
+#       print("    hcode    0x%x" % hcode)
+#       print("    mask     0x%x" % self._mask)
+#       print("    ndx      %d (0x%s)" % (ndx, ndx))
+#       print("    flag     0x%x " % flag)
+#       print("    bitmap   0x%x " % self._bitmap)
         # END
 
         if self._bitmap & flag:
@@ -300,27 +298,36 @@ class Table(object):
             if mask:
                 slot_nbr = popcount64(self._bitmap & mask)
             # DEBUG
-            print("    slot_nbr   0x%x " % slot_nbr)
+#           print("    slot_nbr 0x%x " % slot_nbr)
             # END
             node = self._slots[slot_nbr]
             if isinstance(node, Leaf):
                 if key == node.key:
                     value = node.value
+                # DEBUG
+                else:
+                    print("Table[%d].find_leaf: key mismatch, returning None" %
+                          self._nbr)
+                # END
             else:
                 # node is a Table, so recurse
-                depth += 1
                 if depth <= self.root.max_table_depth:
                     hcode >>= self._wexp
-                    value = node.find_leaf(hcode, depth, key)
+                    value = node.find_leaf(hcode, depth + 1, key)
+                    # DEBUG
+                    if value is None:
+                        print("Table[%d].find_leaf: recursing returned None" %
+                              self._nbr)
+                    # END
                 # otherwise we will return None
         # DEBUG
         else:
-            print("Table.find_leaf:  depth %d: slot_nbr %d is empty" % (
-                depth, slot_nbr))
+            print("Table[%d].find_leaf:  depth %d: bitmap is empty" % (
+                self._nbr, depth))
         # END
         return value    # we already have the key
 
-    def insert_leaf(self, hcode, depth, leaf):
+    def insert_leaf(self, hcode, leaf):
         """
         Enter with hcode having been shifted so that the high-order wexp bits
         determine ndx, the index of the bit to be set`.
@@ -336,17 +343,17 @@ class Table(object):
             # count bits below this one in the bitmap
             slot_nbr = popcount64(self._bitmap & mask)
         slice_size = len(self._slots)
-        # DEBUG
-        print("Table.insert_leaf: PRE-INSERTION")
-        print("                   depth      = %d" % depth)
-        print("                   hcode      = 0x%x" % hcode)
-        print("                   ndx        = 0x%x" % ndx)
-        print("                   flag       = 0x%x" % flag)
-        print("                   mask       = 0x%x" % mask)
-        print("                   slot_nbr   = %d" % slot_nbr)
-        print("                   bitmap     = 0x%x" % self._bitmap)
-        print("                   slice_size = %d" % slice_size)
-        # END
+#       # DEBUG
+#       print("Table[%d].insert_leaf: PRE-INSERTION" % self._nbr)
+#       print("                   depth      = %d"   % self._depth)
+#       print("                   hcode      = 0x%x" % hcode)
+#       print("                   ndx        = %d (0x%x)" % (ndx, ndx))
+#       print("                   flag       = 0x%x" % flag)
+#       print("                   mask       = 0x%x" % mask)
+#       print("                   slot_nbr   = %d" % slot_nbr)
+#       print("                   bitmap     = 0x%x" % self._bitmap)
+#       print("                   slice_size = %d" % slice_size)
+#       # END
 
         if slice_size == 0:
             self._slots = [leaf]
@@ -364,22 +371,15 @@ class Table(object):
                         # keys match so replace value
                         entry.value = leaf.value        # MUST BE DEEPCOPY ?
                     else:
-                        depth += 1
-                        if depth > self._root.max_table_depth:
-                            raise HamtError(
-                                "max table depth %d exceeded" %
-                                self._root.max_table_depth)
-                        deeper = Table(depth, self._root, leaf)
+                        deeper = Table(self._depth + 1, self._root, entry)
+                        deeper.insert_leaf(hcode >> self.wexp, leaf)
+
                         # the new table replaces the existing leaf
                         self._slots[slot_nbr] = deeper
 
-                else:   # it's a Table
-                    depth += 1
-                    if depth > self._root.max_table_depth:
-                        raise HamtError('max table depth exceeded')
+                else:
                     # it's a Table, so let's recurse
-                    hcode >>= self._wexp
-                    entry.insert_leaf(hcode, depth, leaf)
+                    entry.insert_leaf(hcode >> self._wexp, leaf)
 
             # nothing in the slot
             elif slot_nbr == 0:
@@ -393,12 +393,10 @@ class Table(object):
                     [leaf] + self._slots[slot_nbr:]
                 self._bitmap |= flag
 
-        print("Table.insert_leaf: POST INSERTION")
-        print("                   bitmap     = 0x%x" % self._bitmap)
-
-#   def is_leaf(self):
-#       """ Return whether this is a Leaf (it isn't). """
-#       return False
+        # DEBUG
+#       print("Table[%d].insert_leaf: POST INSERTION depth %d, bitmap 0x%x" % (
+#           self._nbr, self._depth, self._bitmap))
+        # END
 
 
 class Root(object):
@@ -483,16 +481,12 @@ class Root(object):
                     # DEBUG
                     #print("root slot %3d is Leaf" % ndx)
                     # END
-                else:
-                    # DEBUG
-                    #print("root slot %3d is Table" % ndx)
-                    # END
-                    # recurse
+                elif isinstance(node, Table):
                     count += node.leaf_count
         # DEBUG
             # else:
             #    print("root slot %03d is EMPTY" % ndx)
-        # print("             returning Root leaf count %d" % count)
+        #print("             returning Root.leaf_count %d" % count)
         # END
         return count
 
@@ -512,7 +506,7 @@ class Root(object):
 
         hcode = uhash(key)
         ndx = hcode & self._mask
-        node = self._slots[ndx]
+        node = self._slots[ndx]         # XXX WRONG
         if node is None:
             raise HamtNotFound
         if isinstance(node, Leaf):
@@ -543,9 +537,9 @@ class Root(object):
         node = self._slots[ndx]
 
         # DEBUG
-        print("Root.find_leaf:")
-        print("    hcode    0x%x" % hcode)
-        print("    ndx      0x%x (%d)" % (ndx, ndx))
+#       print("Root.find_leaf:")
+#       print("    hcode    0x%x" % hcode)
+#       print("    ndx      0x%x (%d)" % (ndx, ndx))
 
         # END
         if node:
@@ -582,7 +576,7 @@ class Root(object):
                 if cur_key == new_key:
                     # keys match
                     # DEBUG
-                    print("Root.insert_leaf: keys match, so overwriting val")
+                    #print("Root.insert_leaf: keys match, so overwriting val")
                     # END
                     node.value = leaf.value
                 else:
@@ -594,17 +588,19 @@ class Root(object):
                     new_hcode = hcode >> self._texp    # hcode for new entry
 
                     # DEBUG
-                    print("Root.insert_leaf: keys differ, replacing with Table")
+#                   print("Root.insert_leaf: keys differ, replacing with Table")
                     # END
 
-                    new_table = Table(1, self, leaf)
+                    new_table = Table(1, self, node)
                     self._slots[ndx] = new_table
                     cur_hcode = uhash(cur_key) >> self._texp
-                    new_table.insert_leaf(cur_hcode, 1, node)
+                    new_table.insert_leaf(
+                        uhash(leaf.key) >> self._texp,
+                        leaf)
 
             else:
                 # DEBUG
-                print("Root.insert_leaf: node is Table")
+                #               print("Root.insert_leaf: node is Table")
                 # END
                 # it's a table
                 if self._max_table_depth < 1:
@@ -612,4 +608,4 @@ class Root(object):
                         "max table depth (%d) exceeded" %
                         self._max_table_depth)
                 new_hcode = hcode >> self._texp    # hcode for new entry
-                node.insert_leaf(new_hcode, 1, leaf)
+                node.insert_leaf(new_hcode, leaf)
