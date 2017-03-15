@@ -7,10 +7,9 @@
 #import os
 import time
 import unittest
-from binascii import b2a_hex
 
 from rnglib import SimpleRNG
-from hamt import Root, Table, Leaf, HamtError, uhash
+from hamt import Root, Leaf, uhash
 
 
 class TestTable(unittest.TestCase):
@@ -67,6 +66,7 @@ class TestTable(unittest.TestCase):
             myval[:] = value            # local copy of value
             mykey[0] &= ~mask
             mykey[0] |= slot_nbr
+            # pylint: disable=redefined-variable-type
             mykey = bytes(mykey)
 
             myval[0] &= ~mask
@@ -116,7 +116,6 @@ class TestTable(unittest.TestCase):
         mask = (1 << suffix_len) - 1
 
         key0 = bytes(self.rng.some_bytes(keylen))
-        keys = [key0]
         hcode0 = uhash(key0)
         low_bits0 = hcode0 & mask
         leaves = []
@@ -153,7 +152,6 @@ class TestTable(unittest.TestCase):
         """
 
         wexp = texp     # we aren't yet interested in wexp != texp
-        slot_count = 1 << texp
         root = Root(wexp, texp)
         self.assertEqual(root.leaf_count, 0)
         self.assertEqual(root.table_count, 1)     # root table is counted
@@ -179,11 +177,6 @@ class TestTable(unittest.TestCase):
         # root table.
         self.assertEqual(root.leaf_count, inserted)
         self.assertEqual(len(by_keys), inserted)
-
-        # DEBUG
-        # print("There are %d/%d entries in the root table." % (
-        #    len(slot_nbrs), slot_count))
-        # END
 
         leaf = self.make_a_unique_leaf(by_keys)
         # this will either be inserted into the root table or into a
@@ -245,7 +238,12 @@ class TestTable(unittest.TestCase):
     # ---------------------------------------------------------------
 
     def do_test_with_matching_keys(self, texp):
+        """
+        Run matching-keys test with a specific value of t.
 
+        We create a set of Leafs whose hcodes have the same low-order
+        bits (so that they collide on insertion, causing splitting).
+        """
         wexp = texp
         root = Root(wexp, texp)
         self.assertEqual(root.leaf_count, 0)
@@ -266,8 +264,12 @@ class TestTable(unittest.TestCase):
         self.assertEqual(root.leaf_count, inserted)
 
     def test_with_matching_keys(self):
+        """
+        Run matching-keys test with a range of t values.
 
-        for texp in [4]:
+        Computing matching keys is very slow, so we do not test t = 6.
+        """
+        for texp in [3, 4, 5]:
             self.do_test_with_matching_keys(texp)
 
 

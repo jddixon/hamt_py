@@ -7,10 +7,9 @@
 #import os
 import time
 import unittest
-from binascii import b2a_hex
 
 from rnglib import SimpleRNG
-from hamt import Root, Table, Leaf, HamtError, uhash
+from hamt import Root, Leaf, uhash
 
 
 class TestRoot(unittest.TestCase):
@@ -60,6 +59,7 @@ class TestRoot(unittest.TestCase):
             myval[:] = value            # local copy of value
             mykey[0] &= ~mask
             mykey[0] |= slot_nbr
+            # pylint: disable=redefined-variable-type
             mykey = bytes(mykey)
 
             myval[0] &= ~mask
