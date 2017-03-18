@@ -7,11 +7,12 @@ from binascii import b2a_hex
 
 from xlutil import popcount64
 
-__version__ = '0.1.7'
-__version_date__ = '2017-03-15'
+__version__ = '0.1.8'
+__version_date__ = '2017-03-17'
 
 __all__ = ['__version__', '__version_date__',
            'MAX_W',
+           'countem',       # EXPERIMENT
            'uhash',
            'HamtError', 'HamtNotFound',
            'Leaf', 'Table', 'Root']
@@ -26,6 +27,23 @@ MAX_W = 6
 def uhash(val):
     """ Return the hash of a string of bytes as an unsigned int64. """
     return hash(val) % ((sys.maxsize + 1) * 2)
+
+# EXPERIMENT --------------------------------------------------------
+
+
+def countem(self):
+    table_count, leaf_count = 0, 0
+    for slot in self._slots:
+        if slot:
+            if isinstance(slot, Table):
+                table_count += 1
+            elif isinstance(slot, Leaf):
+                leaf_count += 1
+    # DEBUG
+    print("countem: %d tables, %d leafs" % (table_count, leaf_count))
+    # END
+
+# END EXPERIMENT ----------------------------------------------------
 
 # CLASSES
 
@@ -213,7 +231,7 @@ class Table(object):
         else:
             self._slots = self._slots[:offset] + self._slots[offset + 1:]
 
-    def delete_leaf(self, hcode, depth, key):       # KEY, DEPTH not used?
+    def delete_leaf(self, hcode, key):
         """
         Remove a Leaf from the Table.
 
@@ -247,11 +265,9 @@ class Table(object):
                 raise HamtNotFound
         else:
             # node is a table, so recurse
-            depth += 1
-            if depth > self.root.max_table_depth:
+            if self._depth + 1 > self.root.max_table_depth:
                 raise HamtNotFound
-            hcode >>= self._wexp
-            node.delete_leaf(hcode, depth, key)
+            node.delete_leaf(hcode >> self._wexp, key)
 
     def find_leaf(self, hcode, depth, key):
         """
@@ -303,15 +319,15 @@ class Table(object):
                     hcode >>= self._wexp
                     value = node.find_leaf(hcode, depth + 1, key)
                     # DEBUG
-                    if value is None:
-                        print("Table[%d].find_leaf: recursing returned None" %
-                              self._nbr)
+#                   if value is None:
+#                       print("Table[%d].find_leaf: recursing returned None" %
+#                             self._nbr)
                     # END
                 # otherwise we will return None
         # DEBUG
-        else:
-            print("Table[%d].find_leaf:  depth %d: bitmap is empty" % (
-                self._nbr, depth))
+#       else:
+#           print("Table[%d].find_leaf:  depth %d: bitmap is empty" % (
+#               self._nbr, depth))
         # END
         return value    # we already have the key
 
@@ -490,25 +506,40 @@ class Root(object):
         return count
 
     def delete_leaf(self, key):
-        """ Find a delete a Leaf node in or below this Root, given its key. """
+        """ Delete a Leaf node in or below this Root, given its key. """
 
         hcode = uhash(key)
         ndx = hcode & self._mask
         node = self._slots[ndx]
+#       # DEBUG
+#       print("Root.delete_leaf: ndx %d" % ndx)
+#       if not node:
+#           print("  slot is empty")
+#       elif isinstance(node, Leaf):
+#           print("  slot is a Leaf")
+#       elif isinstance(node, Table):
+#           print("  slot is a Table")
+#       else:
+#           print("  DUNNO what's in this slot")
+#       # END
         if node is None:
             raise HamtNotFound
         if isinstance(node, Leaf):
             if node.key == key:
+                # DEBUG
+                #print("  FOUND: setting slot %d to None" % ndx)
+                # END
                 self._slots[ndx] = None
             else:
                 raise HamtNotFound
         else:
             # entry is a Table, so recurse
+            # DEBUG
+            #print("  slot %d holds a Table" % ndx)
+            # END
             if self._max_table_depth < 1:
                 raise HamtNotFound
-            else:
-                hcode >>= self._texp
-            node.delete_leaf(hcode, 1, key)
+            node.delete_leaf(hcode >> self._texp, key)
 
     def find_leaf(self, key):
         """
@@ -594,3 +625,7 @@ class Root(object):
                         self._max_table_depth)
                 new_hcode = hcode >> self._texp    # hcode for new entry
                 node.insert_leaf(new_hcode, leaf)
+
+    def visit(self, func):
+        """ EXPERIMENT """
+        func(self)

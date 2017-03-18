@@ -9,7 +9,7 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
-from hamt import Root, Leaf, uhash
+from hamt import HamtNotFound, Root, Leaf, uhash, countem
 
 
 class TestRoot(unittest.TestCase):
@@ -109,19 +109,53 @@ class TestRoot(unittest.TestCase):
         self.assertEqual(root.leaf_count, 0)
         self.assertEqual(root.table_count, 1)     # root table is counted
 
-        leaves = self.make_a_leaf_cluster(texp)     # 1 << texp unique Leafs
+        candidate = self.make_a_leaf_cluster(texp)     # 1 << texp unique Leafs
         inserted = 0
         ndxes = []
-        for leaf in leaves:
+        leaves = []
+        for leaf in candidate:
             ndx = uhash(leaf.key) & root.mask
             if not ndx in ndxes:
                 root.insert_leaf(leaf)
+                leaves.append(leaf)
                 inserted += 1
                 ndxes.append(ndx)
                 self.assertEqual(root.leaf_count, inserted)
                 self.assertEqual(root.table_count, 1)
                 value = root.find_leaf(leaf.key)
                 self.assertEqual(value, leaf.value)
+
+        # EXPERIMENT
+        # print("\nroot.leaf_count is %d" %  root.leaf_count)
+        # root.visit(countem)
+
+        for leaf in leaves:
+
+            # verify the slot is occupied -----------------
+            hcode = uhash(leaf.key)
+            ndx = root._mask & hcode
+            self.assertIsNotNone(root._slots[ndx])      # SOMETIMES FAILS
+
+            # verify the leaf is present ------------------
+            found = root.find_leaf(leaf.key)
+            self.assertIsNotNone(found)
+
+            # ... and its value is as expected ------------
+            self.assertEqual(found, leaf.value)
+
+            # remove the leaf -----------------------------
+            root.delete_leaf(leaf.key)
+            # slot is empty -------------------------------
+            self.assertIsNone(root._slots[ndx])
+            # the leaf is gone ----------------------------
+            try:
+                value = root.find_leaf(leaf.key)
+            except HamtNotFound:
+                # success
+                pass
+
+        self.assertEqual(root.leaf_count, 0)
+        self.assertEqual(root.table_count, 1)
 
     def test_flat_root(self):
         """
