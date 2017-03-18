@@ -7,24 +7,24 @@ Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END RSA PUBLIC KEY-----
-hamt_py v0.1.7
-2017-03-15 22:34:59
+hamt_py v0.1.8
+2017-03-18 00:01:24
 # BEGIN CONTENT #
 hamt_py
  .dvcz
-  builds ba8f437dd94fabb772eb00e4dcc530d2149f25f2
+  builds 8be332c78006b58280d79ab7c818181d1cc503b5
   copyright 04e8696e6424c21d717e46008780505d598eb59a
-  lastBuildList 90d0033e001bcc09a7e83282d6a13636f757381f
+  lastBuildList 957b9cea30500b7e9e73e7913c40c1633b6f13d0
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
   projCfg d0e76a847a19647d04c3454cd328a02c81243f6e
   projCfg.local 3b240a4bea038e136d47f5fb94d9a50304aee3d6
-  version 6f4c44e711c012ef6a5e9f136dbc1f6ef8d8a0ad
+  version a30dd58f9f1f68de904db7e032cc543bc5d51007
  .gitignore a29a464d1f999a8323f7cafe43fe2587b321f818
  .gitignore.local 701e71ad917b19e7f6b7fd4bdc542180e9d977a7
- CHANGES 184ef1ad71f07cec518066b860bbbe5d7dc2116c
+ CHANGES 78c3434fd6b1ed9ddedab41c8e0f0c02b42d267c
  LICENSE-MIT.md aec2b90058ed291d26eef53badc44802cda9bcde
  README.md c42872778f76106b3a830d86758b20600c29d3ed
- TODO ec65eec284331b8a965fae1968a7770ca4d33467
+ TODO 54de98058aae97de4a6a64b83d60d1d83606995e
  bkp2U 7713cddf6eb06ef6d6f1712fbb6ab354960b6948
  checkCoverage 2e1499565bbd80868e414ec3c60c725bbc60003d
  countem 04b7aa6f249aff9797dbd5a0143f0e8a5f02f1b1
@@ -39,19 +39,20 @@ hamt_py
   hamt_py-0.1.5.tar.gz 27cfad7d6332c593bd802ca960a019bb6cc5de20
   hamt_py-0.1.6.tar.gz 3914f4e245734a8854501d163afa76f6d573400d
   hamt_py-0.1.7.tar.gz 062bcd08aee145fc39c63e1e7d195984ef0677ed
+  hamt_py-0.1.8.tar.gz 2e2a7b9d6db6298e8f3ebe5147d95a2bfc3b26cc
  doPyLint 921f8e761f13463f6df35a60ebf7d78233c995d9
  ghpDoc
   index.md 9c6f24888d012058e4511eebbb384a294f49ed8c
  hamt
-  __init__.py c6770b98f5e309f521c5a2fca3c8a47cfc0dbbb1
+  __init__.py 93ff0368f19c6e569aa8927bd8f3137ca23f174c
  installit 20e618660744346913b6a3a6e5913044ebca0089
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
  setup.py 3862d1300ec0b529e4c81c030e637978dfb98b83
  styleit 8ee97e21f1f3c79ffe27d5c48ce2a4a8b620a29d
  test.all 189db63de6aa15b2debcca31bdc2cac4df2b0ee8
  test_leaf.py 36542e27b1d6487bc063293f9fe66cff12c6320c
- test_root.py c7aec64fc4959fd254468e4c65abd746aa564213
- test_table.py 3075d3689dd67edb844d4fae88269f963338bd17
+ test_root.py 9dee4cf5ac06dabf9165c2d24e793d516aae03b2
+ test_table.py fc2f7ed1d13fe57f538104c35f8260fcdce7d106
 # END CONTENT #
 
-MJyHyFiSveKF17LsbBtXN1JKWpzqBBUVVlcR3Ku0oKwYBfZ8XyIpM0KX7nZazZiB8HHBDYLezrjR2+H/1QFtLVIpU/TJdLuTVQx6x5TirSC3cM+Po7gwklXlzgiCcp/degjTPFB4kFTf5cmgfL48pEANqnL+IePBJSlccq7qQf5M++Hn3xJGgoEND/H8vW2SNNnFlsBeWLe28zy24X+YBh3OSVw3IFFge3GdmoP+/2Km9iW+gOZUnP6kT0qUur9gtCIOby6SzINIGHdaOLEWm4Oefxs3X/fCWly39iFrSOd+avUx2ZNdSYenjTWoVvSuxqo42iZHFsHqzcGCv4o4fA==
+gxm57hgHszaB897ig1UA/bffqVrYIVzHBVKplE/lzk6iYpGJyB1O9YrYTiQmAfTrwkC2/cThsHU3ebEncWEhTAhhZKRGpKqPnGAReMrJErXfKYObetQpgQ6kHZ2D5YtVRecxY81e6XftV+MJqs4htkqWJQRc5QmtnJDycRmNdyCb/OShqFI8tfGF5Kzk/jhp6p+HR9VuDSaO1QfgTzoGPmu0sC13+ibSd1fKap//dtHctNJKrr+9K4/F5GAAHG82c0DbcuKW5h7gimX2DT+VbwpDSRm8wUAuQXkZgFgnh6eI3rv7T/l8a7ofYMfWszFdGG2cvtI0d4d4M1LMkEln1Q==

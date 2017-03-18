@@ -1,5 +1,8 @@
 py/hamt_py/TODO
 
+2017-03-16
+    * add Visitor interface to hamt_py
+    
 2017-03-15
     * correct implementation of Table.delete_leaf()
     * test it
@@ -11,6 +14,9 @@ py/hamt_py/TODO
     * specify Root.delete_table() 
     * test it
 
+    * make sure that {find,insert,delete} always guarantee that 
+            self._depth <= root.max_table_depth
+        before recursing
 
 2017-03-07
     * texp = 0 should be an error                                   * FIXED

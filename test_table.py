@@ -213,6 +213,7 @@ class TestTable(unittest.TestCase):
         self.assertEqual(root.leaf_count, 0)
         self.assertEqual(root.table_count, 1)     # root table is counted
 
+        # add all the leafs -------------------------------
         leaves = self.make_many_leaves(slot_count * 2)
         inserted = 0
         for leaf in leaves:
@@ -220,12 +221,32 @@ class TestTable(unittest.TestCase):
             inserted += 1
             self.assertEqual(root.leaf_count, inserted)
 
+        # verify they are all there -----------------------
         for leaf in leaves:
             value = root.find_leaf(leaf.key)
             self.assertEqual(value, leaf.value)
 
         # we have successfully inserted that many leaf nodes into the tree
         self.assertEqual(root.leaf_count, inserted)
+
+        # now delete each of the keys ---------------------
+        for leaf in leaves:
+            # the leaf is present
+            value = root.find_leaf(leaf.key)
+            self.assertEqual(value, leaf.value)
+
+            # delete the leaf
+            root.delete_leaf(leaf.key)
+
+            # verify that now it's gone
+            try:
+                value = root.find_leaf(leaf.key)
+            except HamtNotFound:
+                # success, it's gone
+                pass
+
+        # verify the count is zero
+        self.assertEqual(root.leaf_count, 0)
 
     def test_with_many_keys(self):
         """
