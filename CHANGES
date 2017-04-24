@@ -1,5 +1,8 @@
 py/hamt_py/CHANGES
 
+v0.1.9
+    2017-04-24
+        * drop dist/* from repo; plus minor edits                   SLOC 1106
 v0.1.8
     2017-03-17
         * complete and test {Table,Root}.delete_leaf()              SLOC 1103
@@ -39,6 +42,7 @@ v0.0.2
 v0.0.1
     2017-03-02
         * initial commit
+
 
 
 

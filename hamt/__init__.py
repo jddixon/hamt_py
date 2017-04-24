@@ -7,8 +7,8 @@ from binascii import b2a_hex
 
 from xlutil import popcount64
 
-__version__ = '0.1.8'
-__version_date__ = '2017-03-17'
+__version__ = '0.1.9'
+__version_date__ = '2017-04-24'
 
 __all__ = ['__version__', '__version_date__',
            'MAX_W',
@@ -32,6 +32,9 @@ def uhash(val):
 
 
 def countem(self):
+    """ Count the number of Leafs and Tables in a table. """
+
+    # pylint: disable=protected-access
     table_count, leaf_count = 0, 0
     for slot in self._slots:
         if slot:
@@ -626,6 +629,6 @@ class Root(object):
                 new_hcode = hcode >> self._texp    # hcode for new entry
                 node.insert_leaf(new_hcode, leaf)
 
-    def visit(self, func):
+    def accept(self, func):
         """ EXPERIMENT """
         func(self)
