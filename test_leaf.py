@@ -42,5 +42,6 @@ class TestLeaf(unittest.TestCase):
 
         self.assertTrue(isinstance(leaf, Leaf))
 
+
 if __name__ == '__main__':
     unittest.main()

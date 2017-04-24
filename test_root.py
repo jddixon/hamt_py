@@ -9,7 +9,7 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
-from hamt import HamtNotFound, Root, Leaf, uhash, countem
+from hamt import HamtNotFound, Root, Leaf, uhash  # , countem
 
 
 class TestRoot(unittest.TestCase):
@@ -133,8 +133,8 @@ class TestRoot(unittest.TestCase):
 
             # verify the slot is occupied -----------------
             hcode = uhash(leaf.key)
-            ndx = root._mask & hcode
-            self.assertIsNotNone(root._slots[ndx])      # SOMETIMES FAILS
+            ndx = root.mask & hcode
+            self.assertIsNotNone(root.slots[ndx])
 
             # verify the leaf is present ------------------
             found = root.find_leaf(leaf.key)
@@ -146,7 +146,7 @@ class TestRoot(unittest.TestCase):
             # remove the leaf -----------------------------
             root.delete_leaf(leaf.key)
             # slot is empty -------------------------------
-            self.assertIsNone(root._slots[ndx])
+            self.assertIsNone(root.slots[ndx])
             # the leaf is gone ----------------------------
             try:
                 value = root.find_leaf(leaf.key)

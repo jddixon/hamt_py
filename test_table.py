@@ -9,7 +9,7 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
-from hamt import Root, Leaf, uhash
+from hamt import HamtNotFound, Root, Leaf, uhash
 
 
 class TestTable(unittest.TestCase):

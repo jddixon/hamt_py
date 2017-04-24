@@ -4,9 +4,9 @@ py/hamt_py/TODO
     * add Visitor interface to hamt_py
     
 2017-03-15
-    * correct implementation of Table.delete_leaf()
-    * test it
-    * test Root.delete_leaf()
+    * correct implementation of Table.delete_leaf()                     * DONE
+    * test it                                                           * DONE
+    * test Root.delete_leaf()                                           * DONE
     
     CONSIDER THE FOLLOWING:
     * specify Table.delete_table() 
@@ -19,6 +19,6 @@ py/hamt_py/TODO
         before recursing
 
 2017-03-07
-    * texp = 0 should be an error                                   * FIXED
-    * wexp = 0 should be an error                                   * FIXED
+    * texp = 0 should be an error                                       * FIXED
+    * wexp = 0 should be an error                                       * FIXED
     * probably texp < wexp should be an error
