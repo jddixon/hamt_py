@@ -6,7 +6,7 @@ then
   
   rm -rf build/* tmp/* 
   
-  pySloc -L py   -X cover -X htmlcov -X dist -v $@
+  pySloc -L py  -X cover -X htmlcov -X dist -v $@ hamt tests/test_leaf.py tests/test_root.py tests/test_table.py setup.py
 else
   echo "DEV_BASE is not defined"
 fi

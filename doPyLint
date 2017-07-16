@@ -1,3 +1,8 @@
-pylint src/setup.py src/hamt \
-    tests/test*.py
+#!/usr/bin/env bash
 
+if [ ! -z "${DEV_BASE// }" ]
+then
+  pylint setup.py src/* tests/*
+else
+  echo "DEV_BASE is not defined"
+fi

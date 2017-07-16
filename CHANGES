@@ -1,5 +1,8 @@
 py/hamt_py/CHANGES
 
+v0.1.11
+    2017-07-16
+        * add MANIFEST.in, update setup.py and cfg files            SLOC 1117
 v0.1.10
     2017-06-10
         * restructure for pytest                                    SLOC 1107
@@ -45,6 +48,7 @@ v0.0.2
 v0.0.1
     2017-03-02
         * initial commit
+
 
 
 
