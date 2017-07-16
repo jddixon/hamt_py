@@ -7,53 +7,43 @@ Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
-hamt_py v0.1.9
-2017-04-24 20:35:33
+hamt_py v0.1.11
+2017-07-16 13:04:13
 # BEGIN CONTENT #
 hamt_py
  .dvcz
-  builds bfc2077aac1469d8ede50f7505cfb7db2cd34df6
+  builds 92208d660f6c6a3edc73766b13f1678fc401405e
   copyright 04e8696e6424c21d717e46008780505d598eb59a
-  lastBuildList 2f16fd302379e4e65aeab4414628644e8c996a7d
+  lastBuildList 3964fb87e3677d5a9162d8ce4620035ccde5b497
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
-  projCfg d0e76a847a19647d04c3454cd328a02c81243f6e
+  projCfg 9ae04d8c23d3b06c43aa9c9286ab4e3717c68a40
   projCfg.local 3b240a4bea038e136d47f5fb94d9a50304aee3d6
-  version cb182ebfccf51a154b2c9e396b16ea177ff1f180
- .gitignore a29a464d1f999a8323f7cafe43fe2587b321f818
+  version 7c233f4dc6bb45374010e31fed66a78bd137057b
+ .gitignore 9b81ca41b8f8cdad84069782f69745729f2dd932
  .gitignore.local 701e71ad917b19e7f6b7fd4bdc542180e9d977a7
- CHANGES cf7ea680213d46c9803f03796e2c1f2c65b48423
+ CHANGES 75daa728c58ca5ae284cbb7ddd2aa57b6ed695f0
  LICENSE-MIT.md aec2b90058ed291d26eef53badc44802cda9bcde
+ MANIFEST.in ab66c4ba9f7b7352eb828e32839a387bf990125b
  README.md c42872778f76106b3a830d86758b20600c29d3ed
  TODO 1ce03969b916b053221db9bf94a4582f16aa4996
  bkp2U 7713cddf6eb06ef6d6f1712fbb6ab354960b6948
- checkCoverage 2e1499565bbd80868e414ec3c60c725bbc60003d
- countem 04b7aa6f249aff9797dbd5a0143f0e8a5f02f1b1
- dist
-  hamt_py-0.0.2.tar.gz 351f9b299b12a91e111baf0706a40cb633706ad7
-  hamt_py-0.0.3.tar.gz 489ceff604ee7895afc934a81fa9b2d8e2dab2c5
-  hamt_py-0.1.0.tar.gz d5285160ec39fb4ae8793555bdba8cf70c7a2b8b
-  hamt_py-0.1.1.tar.gz aecadc22724ec10af686f54b0b1eb3e98d658af5
-  hamt_py-0.1.2.tar.gz 374c8716c449d2d7f145e1cb0b01aff29afe3371
-  hamt_py-0.1.3.tar.gz 39e4fe8274b69cdb6e7ff9a78a43a384fd5b4792
-  hamt_py-0.1.4.tar.gz 75756e82b42cc397e7a4d71314c643725a2a7931
-  hamt_py-0.1.5.tar.gz 27cfad7d6332c593bd802ca960a019bb6cc5de20
-  hamt_py-0.1.6.tar.gz 3914f4e245734a8854501d163afa76f6d573400d
-  hamt_py-0.1.7.tar.gz 062bcd08aee145fc39c63e1e7d195984ef0677ed
-  hamt_py-0.1.8.tar.gz 2e2a7b9d6db6298e8f3ebe5147d95a2bfc3b26cc
-  hamt_py-0.1.9.tar.gz efd64a0c939eeb6735d4cd9066355b489ae7808f
- doPyLint 921f8e761f13463f6df35a60ebf7d78233c995d9
+ checkCoverage 16b81a95535905339efd20fae089f708201f7b61
+ countem bc8becb124d9c6ca2fe969d20ff98546d0d25e44
+ doPyLint 31321ad99eb3b9ac0928a68c29a8b5b88c9472fb
  ghpDoc
   index.md 9c6f24888d012058e4511eebbb384a294f49ed8c
- hamt
-  __init__.py 44c1b234d41f744ae54a4ef0d0293febbbba9534
  installit 20e618660744346913b6a3a6e5913044ebca0089
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
- setup.py 3862d1300ec0b529e4c81c030e637978dfb98b83
- styleit 8ee97e21f1f3c79ffe27d5c48ce2a4a8b620a29d
- test.all 189db63de6aa15b2debcca31bdc2cac4df2b0ee8
- test_leaf.py 4a09943e5c232c2254c45a208a06bdbdde54d2ff
- test_root.py 2cac63acbddaacd697c8c38cbe81403b01b215b1
- test_table.py a85d087d1af7ba6e1c322db5b1d29dc870a15633
+ setup.py 1eb2feb2486ae951666885e4b389c68022bad85c
+ src
+  hamt
+   __init__.py c9fbae835a31cd0e0d458384fb4dbad7df11e3c0
+ styleit 458076cb0e5c42964626dfb773d4eb9d874ad89e
+ test.all c85e5576f761b0087259705095fc71bb0c70c8f0
+ tests
+  test_leaf.py 4a09943e5c232c2254c45a208a06bdbdde54d2ff
+  test_root.py 2cac63acbddaacd697c8c38cbe81403b01b215b1
+  test_table.py a85d087d1af7ba6e1c322db5b1d29dc870a15633
 # END CONTENT #
 
-DcaJWyURKp8guHnJcbO9jgcWO6ByuQvPcvbKNSFXnLpY7/TGuJ8evyBv+k9lqJtsCb6mMx/oQr/+8k5gt3QQqBIEcG1pmA9kqoNhFntmm9WSL/fUNbMjAal8HvDLNqPrWckL7EDiVkCghONGyiPQhNk7X0uUF9mIAS+YjUw+sE3wQRBlegTPclcrxQBqmFdKeXs1FAZyJVE8XREqTGx7KUgoTidsZC2wXtjUTU5qMCtBVQsGYq7MjDBBY/FImuAMCnIybYkDlWib2TuLmzNUbBQ9s8YmIleqdGRXg/wNhXquKZ1iS9/h1tDpOkA+9C/fmkizbj8/Am7217czfVEcHw==
+H0JSAOGKjf9TCJORrOTEkAXbuFs1JNJXVeEJ3gxkcM2NDu+VkFHv+uDn+c4G/hauqNkopbHT4tNgBbHnJvh9l/PGqNMThqCHzNN1IXRXaujJXncr0KZXqPwMxHoVhjJ0v0KIH9mmfhZtAq5FlkiTB7sSXqRqHLxk17tbUQVohmnMxw1ICdmDXPuKdbOSIi4wn3I74CpFjopr/7eDpEhYIzg4mHcfd8o4Q+xKJWnDOE2rpYm2XLXiSOBhdjBGI2nM7eScd2fh9W2+UnhEjhZGY68QufUWjdrFttz0oRm4ewNTeU+2OKv1byqk3bZVEVeOd/ea1ZspY7M7wfUPxAqfzw==
