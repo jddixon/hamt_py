@@ -7,8 +7,8 @@ from binascii import b2a_hex
 
 from xlutil import popcount64
 
-__version__ = '0.1.11'
-__version_date__ = '2017-07-16'
+__version__ = '0.1.12'
+__version_date__ = '2017-08-15'
 
 __all__ = ['__version__', '__version_date__',
            'MAX_W',
