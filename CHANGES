@@ -1,5 +1,8 @@
 py/hamt_py/CHANGES
 
+v0.1.12
+    2017-08-15
+        * add tox.ini and *requirements.txt; edit cfg files         SLOC 1152
 v0.1.11
     2017-07-16
         * add MANIFEST.in, update setup.py and cfg files            SLOC 1117
@@ -48,6 +51,7 @@ v0.0.2
 v0.0.1
     2017-03-02
         * initial commit
+
 
 
 

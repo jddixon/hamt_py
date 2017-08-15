@@ -2,8 +2,8 @@
 project:hamt_py
 package:hamt
 mainlang:py
-version:0.1.10
-versionDate:2017-06-10
+version:0.1.11
+versionDate:2017-07-16
 :?dirs?:
 dir:std:ghpDoc
 dir:std:dist
@@ -28,6 +28,9 @@ code:std:pylintrc
 code:std:.coveragerc
 code:std:check.summary
 code:std:MANIFEST.in
+code:std:tox.ini
+code:std:requirements.txt
+code:std:test_requirements.txt
 txt:std:LICENSE-MIT.md
 txt:std:CHANGES
 txt:std:README.md
@@ -40,4 +43,5 @@ bash:std:test.all
 bash:std:doPyLint
 bash:std:checkCoverage
 bash:std:bkp2u
+py:std:setup.cfg
 py:std:setup.py
