@@ -7,21 +7,25 @@ Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
-hamt_py v0.1.12
-2017-08-15 20:04:43
+hamt_py v0.1.13
+2017-09-15 21:10:25
 # BEGIN CONTENT #
 hamt_py
+ .cache
+  v
+   cache
+    lastfailed bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f
  .dvcz
-  builds c67e94899ef5931ed769f149b14f593185bc45e0
+  builds 645d84062818f9b0d1fd0a73779794042f044a61
   copyright 04e8696e6424c21d717e46008780505d598eb59a
-  lastBuildList d98aec0114a7b156a8f11c9f79b8bde9e8a078e8
+  lastBuildList 635b7697488ce57f3bed58c098a88d6e11e059d6
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
   projCfg e1018a735804f73aa368ac13d83a18f566ee299f
   projCfg.local 3b240a4bea038e136d47f5fb94d9a50304aee3d6
-  version 0f3884d5853404e45398d825fbc5ed90cc8d3b1d
- .gitignore 66cdf14587db03a9da48b25485fb91cda70b66b3
+  version 431a7e963eb9ad32c068303843da6f2a593c03eb
+ .gitignore f588928d66e053d08e0c1d824b6874a244573090
  .gitignore.local 701e71ad917b19e7f6b7fd4bdc542180e9d977a7
- CHANGES e8ecad9fc3742368e9c97cd3ddc60979aa0a30e0
+ CHANGES be1b0b39869e327c693532372c4dac45662c8324
  LICENSE-MIT.md aec2b90058ed291d26eef53badc44802cda9bcde
  MANIFEST.in 7ecdc5eedf233385e0f99ba4c6e4a42212adb46f
  README.md c42872778f76106b3a830d86758b20600c29d3ed
@@ -34,20 +38,20 @@ hamt_py
   index.md 9c6f24888d012058e4511eebbb384a294f49ed8c
  installit 20e618660744346913b6a3a6e5913044ebca0089
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
- requirements.txt 6430ca5896395ec50e588cba5a82d2ed2d32cd85
+ requirements.txt 8d3fe1f6910decdc0c55535ce45dca06746b9359
  setup.cfg f7c26178950ff87856972738d278b16b4dbdaddc
  setup.py cdf8fdb4ac6ebb46d4fa0b1a8647d23b4591fec5
  src
   hamt
-   __init__.py 4f6c544fc49ec34528d0f9451e4d292f8da1ece9
+   __init__.py cfe19af242112408bdf9d998b4387afe1ecc6ddb
  styleit 458076cb0e5c42964626dfb773d4eb9d874ad89e
  test.all c85e5576f761b0087259705095fc71bb0c70c8f0
  test_requirements.txt fc40a98db4b8fa2e9f74bb4b1721107453cc8525
  tests
-  test_leaf.py 4a09943e5c232c2254c45a208a06bdbdde54d2ff
-  test_root.py 2cac63acbddaacd697c8c38cbe81403b01b215b1
-  test_table.py a85d087d1af7ba6e1c322db5b1d29dc870a15633
- tox.ini 110cd0bb07383b140bb8ff3c48637c7d54fd3341
+  test_leaf.py c705153d72daef3b36a49bd3c3d9dd5d46bfd8ed
+  test_root.py a19c94e3cbec2d7129704a92efeb36e06e197b78
+  test_table.py 27b69bf516b5b29183debbeb82a5c1a84a456a75
+ tox.ini 4e7aca973953035cd1f650820884d4c9704175fa
 # END CONTENT #
 
-GAWLwTnl64urrD7qvGx6B2xInm2BGyo1Fe2R2E8cM/kE9YIhcpl5McjYAEhwdnM5Ehr9iZNZACyt4D0o9AJ3FDljeCjrkSnwt7Ip1lWmdM2b0jvvywfNLXWj+4dqMW7vo8+vht4JCeN6YVOFPwECjk/gEZoI+S/PDvRkZslETfvRRr5u0IYp0iDEit/JpibSk+/IGOycrkKXmhy05dsidVNPHakhToNnkvRQZu2YauubZUY9bKqoU3mvPlsbV+8d2ubt0dHmMOqBRjMR25JjHL2NLcxmGSpfZUPstpk0pMQFUF6rqH317HgfmY4NFJGtWT1Uw60CrTplFZsrNFRiBQ==
+SEpvWTHiyZ/3Zz7bLQrF/zIcna262Dq6ur6RCYeP+5WICGKhtOGLuNnT18WNJ1FjkCewdmZYYD0ktvbjZ8Ab1GVdYQjlLZ+RfgAJw7Ne/6VTGZ8cY3ZTaTgNZyY0JykSum/dGj9FBYMiEV3zkaGkfAIJVihdqYrK/MK9MgXy3fqO5aUuMXFGdbAiZlthBz9CIQA0d1m6l4rOHSYbeG8ghI5wAg5kLsEz2MyFITNnlKxFt5CBbLrDZ4qzb1Tib/bMQS8FHKuddK/fbHn3tCvWN+ADUxpuCmx9A6QrO3/t5TyYiZMSgZ3qmudp/a8m+/nITK4rp9jqdp3wEdWhH3r7Mg==

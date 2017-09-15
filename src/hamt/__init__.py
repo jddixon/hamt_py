@@ -3,12 +3,12 @@
 """ NodeID library for python XLattice packages. """
 
 import sys
-from binascii import b2a_hex
+# from binascii import b2a_hex
 
 from xlutil import popcount64
 
-__version__ = '0.1.12'
-__version_date__ = '2017-08-15'
+__version__ = '0.1.13'
+__version_date__ = '2017-09-15'
 
 __all__ = ['__version__', '__version_date__',
            'MAX_W',
@@ -433,11 +433,11 @@ class Root(object):
         self._mask = flag - 1
         self._slots = [None] * flag
         # DEBUG
-        #print("Root: wexp            %d" % wexp)
-        #print("      texp            %d" % texp)
-        #print("      max table depth %d" % self.max_table_depth)
-        #print("      slot count      %d" % flag)
-        #print("      mask            0x%x" % self._mask)
+        # print("Root: wexp            %d" % wexp)
+        # print("      texp            %d" % texp)
+        # print("      max table depth %d" % self.max_table_depth)
+        # print("      slot count      %d" % flag)
+        # print("      mask            0x%x" % self._mask)
         # END
 
     @property
@@ -486,14 +486,14 @@ class Root(object):
                 if isinstance(node, Leaf):
                     count += 1
                     # DEBUG
-                    #print("root slot %3d is Leaf" % ndx)
+                    # print("root slot %3d is Leaf" % ndx)
                     # END
                 elif isinstance(node, Table):
                     count += node.leaf_count
         # DEBUG
             # else:
             #    print("root slot %03d is EMPTY" % ndx)
-        #print("             returning Root.leaf_count %d" % count)
+        # print("             returning Root.leaf_count %d" % count)
         # END
         return count
 
@@ -530,7 +530,7 @@ class Root(object):
         if isinstance(node, Leaf):
             if node.key == key:
                 # DEBUG
-                #print("  FOUND: setting slot %d to None" % ndx)
+                # print("  FOUND: setting slot %d to None" % ndx)
                 # END
                 self._slots[ndx] = None
             else:
@@ -538,7 +538,7 @@ class Root(object):
         else:
             # entry is a Table, so recurse
             # DEBUG
-            #print("  slot %d holds a Table" % ndx)
+            # print("  slot %d holds a Table" % ndx)
             # END
             if self._max_table_depth < 1:
                 raise HamtNotFound
@@ -580,9 +580,9 @@ class Root(object):
         hcode = uhash(leaf.key)
         ndx = hcode & self._mask        # slot number
         # DEBUG
-        #print("insert_leaf: hcode 0x%x" % hcode)
-        #print("             mask  0x%x" % self._mask)
-        #print("             ndx   0x%x (%d)" % (ndx, ndx))
+        # print("insert_leaf: hcode 0x%x" % hcode)
+        # print("             mask  0x%x" % self._mask)
+        # print("             ndx   0x%x (%d)" % (ndx, ndx))
         # END
         node = self._slots[ndx]
 
@@ -598,7 +598,7 @@ class Root(object):
                 if cur_key == new_key:
                     # keys match
                     # DEBUG
-                    #print("Root.insert_leaf: keys match, so overwriting val")
+                    # print("Root.insert_leaf: keys match, so overwriting val")
                     # END
                     node.value = leaf.value
                 else:
@@ -610,7 +610,8 @@ class Root(object):
                     new_hcode = hcode >> self._texp    # hcode for new entry
 
                     # DEBUG
-#                   print("Root.insert_leaf: keys differ, replacing with Table")
+#                   print(
+#                       "Root.insert_leaf: keys differ, replacing with Table")
                     # END
 
                     new_table = Table(1, self, node)

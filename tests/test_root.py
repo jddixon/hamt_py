@@ -3,8 +3,8 @@
 
 """ Test properties of the HAMT Root. """
 
-#import hashlib
-#import os
+# import hashlib
+# import os
 import time
 import unittest
 
@@ -115,7 +115,7 @@ class TestRoot(unittest.TestCase):
         leaves = []
         for leaf in candidate:
             ndx = uhash(leaf.key) & root.mask
-            if not ndx in ndxes:
+            if ndx not in ndxes:
                 root.insert_leaf(leaf)
                 leaves.append(leaf)
                 inserted += 1

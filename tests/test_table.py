@@ -3,8 +3,8 @@
 
 """ Test properties of the HAMT Table. """
 
-#import hashlib
-#import os
+# import hashlib
+# import os
 import time
 import unittest
 
@@ -109,7 +109,7 @@ class TestTable(unittest.TestCase):
         """
         keylen = ((4 * texp) + 7) // 8        # that many bytes
         # DEBUG
-        #print("keylen is %d bytes" % keylen)
+        # print("keylen is %d bytes" % keylen)
         # END
 
         suffix_len = 4 * texp   # that many bits
@@ -121,7 +121,7 @@ class TestTable(unittest.TestCase):
         leaves = []
 
         # DEBUG
-        #print("low order bits: 0x%x" % low_bits0)
+        # print("low order bits: 0x%x" % low_bits0)
         # END
         for _ in range(4):          # we want three or more matching keys
             key = bytes(self.rng.some_bytes(8))
@@ -130,13 +130,13 @@ class TestTable(unittest.TestCase):
                 key = bytes(self.rng.some_bytes(8))
                 low_bits = mask & uhash(key)
             # DEBUG
-            #print("low order bits: 0x%x" % low_bits0)
+            # print("low order bits: 0x%x" % low_bits0)
             # END
             val = bytes(self.rng.some_bytes(16))
             leaf = Leaf(key, val)
             leaves.append(leaf)
         # DEBUG
-        #print("generated %d Leafs" % len(leaves))
+        # print("generated %d Leafs" % len(leaves))
         # END
         return leaves
 
@@ -162,7 +162,7 @@ class TestTable(unittest.TestCase):
         by_keys = {}    # Leafs indexed by key
         for leaf in leaves:
             slot_nbr = uhash(leaf.key) & root.mask
-            if not slot_nbr in slot_nbrs:
+            if slot_nbr not in slot_nbrs:
                 root.insert_leaf(leaf)
                 inserted += 1
                 slot_nbrs.append(slot_nbr)

@@ -3,8 +3,8 @@
 
 """ Test properties of the HAMT leaf. """
 
-#import hashlib
-#import os
+# import hashlib
+# import os
 import time
 import unittest
 
