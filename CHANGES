@@ -1,5 +1,8 @@
 py/hamt_py/CHANGES
 
+v0.1.13
+    2017-09-15
+        * pep8 etc; correct tox.ini, requirements.txt               SLOC 1159
 v0.1.12
     2017-08-15
         * add tox.ini and *requirements.txt; edit cfg files         SLOC 1152
@@ -51,6 +54,7 @@ v0.0.2
 v0.0.1
     2017-03-02
         * initial commit
+
 
 
 
