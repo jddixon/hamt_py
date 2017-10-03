@@ -12,7 +12,7 @@ if exists('README.md'):
         long_desc = file.read()
 
 setup(name='hamt_py',
-      version='0.1.12',
+      version='0.1.14',
       author='Jim Dixon',
       author_email='jddixon@gmail.com',
       long_description=long_desc,
