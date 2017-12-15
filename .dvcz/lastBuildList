@@ -7,22 +7,19 @@ Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
-hamt_py v0.1.14
-2017-10-03 00:29:14
+hamt_py
+2017-12-15 19:45:43
 # BEGIN CONTENT #
 hamt_py
  .dvcz
-  builds 8a2c6eb566c28582e57be07219fc4b8520420832
-  copyright 04e8696e6424c21d717e46008780505d598eb59a
-  lastBuildList b7a22e3f26827df7b6556145153b456cb1a2c0ff
-  license 5977a55c75bb4612004451a56b0b4c22d9d3311d
+  builds 6fde61ec5ee9adc9332419e159b0cab6c943b1d7
+  lastBuildList c27fc3939c0a98f3837f2fc7a77a739dc7d2e36c
   projCfg e1018a735804f73aa368ac13d83a18f566ee299f
   projCfg.local 3b240a4bea038e136d47f5fb94d9a50304aee3d6
-  projConfig.toml d5a20c15dbfb61d04e20c5fe8efa4025ca21764d
-  version 46f71bca0e45b53b3325b201709638ba85ea4355
+  projConfig.toml ce6a91e8daa3b4efbbf7cdd2932fe88c35c19385
  .gitignore f588928d66e053d08e0c1d824b6874a244573090
  .gitignore.local 701e71ad917b19e7f6b7fd4bdc542180e9d977a7
- CHANGES f39d7a40c72d5641649afc0d8e116cca694aa5fe
+ CHANGES 6317eab2da27185fcf8ecfc4ba7b0f3cdf147ae6
  LICENSE-MIT.md aec2b90058ed291d26eef53badc44802cda9bcde
  MANIFEST.in 7ecdc5eedf233385e0f99ba4c6e4a42212adb46f
  README.md c42872778f76106b3a830d86758b20600c29d3ed
@@ -37,18 +34,18 @@ hamt_py
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
  requirements.txt 8d3fe1f6910decdc0c55535ce45dca06746b9359
  setup.cfg f7c26178950ff87856972738d278b16b4dbdaddc
- setup.py 31dd6811c52172e016f9128c18c2cb8cf042060c
+ setup.py 24ff56a513017cc4d15f3e5ca0f8fd706c838517
  src
   hamt
-   __init__.py ef651b88ce8453949f2b9ec4effe0fecc4ba2f7e
+   __init__.py 16e589f3add7e7b5072bf10a0ad68baefa882ec6
  styleit 458076cb0e5c42964626dfb773d4eb9d874ad89e
  test.all c85e5576f761b0087259705095fc71bb0c70c8f0
  test_requirements.txt fc40a98db4b8fa2e9f74bb4b1721107453cc8525
  tests
   test_leaf.py c705153d72daef3b36a49bd3c3d9dd5d46bfd8ed
-  test_root.py a19c94e3cbec2d7129704a92efeb36e06e197b78
-  test_table.py 27b69bf516b5b29183debbeb82a5c1a84a456a75
+  test_root.py 2b2c2a41fda40bb7aadd1516551ab43b8972fa4e
+  test_table.py adf44dd72746f9465ea4037eacdc529c6a02423d
  tox.ini 4e7aca973953035cd1f650820884d4c9704175fa
 # END CONTENT #
 
-any9OsUgYSdiqSSv27es17t6hdGVzdJp0XDPsSmdWP0KmTC49mM5sXXkaTfML5DQKll9B99VsVMNR8hMaXqjp5nfiVUWdXgFtylx8tC3w8bobODdv+cWsSQly5FQBqXiYWU99RK3BPm/T/Tfhn75bmLCfJs3HooHivfPC6aNr7GaerqcLUlnrQJDApEV5TKvtwgHoyX+sbu/40JTBuesv0MTB1DZO+pCf9vydpZZGA6HfJXYe3bXP3vQ7jWqWtyk+GmNL4PZIgmR1Ypex0vV4y6/5YoKBfe4ZaKLUOGKTpnHpneGAVYVxXG2JZDOR5PwqRYEN0thTtPALdA6QSDryg==
+L6ocKdwcIYN0YK9nZP91cjzJZeiOdL/rjzenLVxxgS89Nu/AImxFsWGYSbMMEt2V1Td3hEbny3K9AAwXglW9HxTGfNqjbwMfTn/EPXMlpHr/zSZtPbovnPF/IZaeqm9AxABjGTOnjhCiXpGVvgTYmFQrtbDurXJmi86KZV07zVqJZUUkNosRu5VQ2Eb9xZJDLAslzQ257/EaKkZKGxze32RmxFfsTVsQRYN3LfstkM+XKvjKJgOLFVt/PrMsdLpynwZwU8m7GlAFwRp4KHQvcvha4/n7xe82K61bOU3sPwXtxAg8I4OfE68U1jTUWHS/VuqhIrCwSDjGfDsyCvyfRQ==

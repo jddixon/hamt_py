@@ -1,37 +1,29 @@
-# projConfig.toml for hamt_py
-
 [meta]
-    version= '0.1.0'
+version = "0.1.0"
 
 [project]
-    name = 'hamt_py'             # external name = distribution name
-    package = 'hamt'             # internal name
-    main_lang = 'py'
-    version = '0.1.14'
-    version_date = '2017-10-02'
-    author = 'Jim Dixon'
-    author_email = 'jddixon@gmail.com'
-    description='generator for hamt_py projects'
-    copyright = '2017'
-    dev_status = 'pre-alpha'
-    license = 'mit'
-    relpath = 'py/hamt_py'
-    state = 'shared'
-    url = 'https://jddixon.github.io/hamt_py'
+name = "hamt_py"
+package = "hamt"
+main_lang = "py"
+version = "0.1.15"
+version_date = "2017-12-15"
+author = "Jim Dixon"
+author_email = "jddixon@gmail.com"
+description = "generator for hamt_py projects"
+copyright = "2017"
+dev_status = "pre-alpha"
+license = "mit"
+relpath = "py/hamt_py"
+state = "shared"
+url = "https://jddixon.github.io/hamt_py"
 
 [py]
-    packages = ['hamt']
-    package_dir = ['src']
-    test_dir = 'tests'
-    py_modules = []
-    scripts=[]
-    ext_modules = []
-
-    # sdReq output
-    distshare = ['rnglib','xlutil_py']
-    requirements=['setuptools']
-    test_requirements=[]
-
-    # trove stuff is TBD
-
-
+packages = [ "hamt",]
+package_dir = [ "src",]
+test_dir = "tests"
+py_modules = []
+scripts = []
+ext_modules = []
+distshare = [ "rnglib", "xlutil_py",]
+requirements = [ "setuptools",]
+test_requirements = []
