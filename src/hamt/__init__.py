@@ -7,8 +7,8 @@ import sys
 
 from xlutil import popcount64
 
-__version__ = '0.1.14'
-__version_date__ = '2017-10-02'
+__version__ = '0.1.15'
+__version_date__ = '2017-12-15'
 
 __all__ = ['__version__', '__version_date__',
            'MAX_W',
@@ -245,7 +245,7 @@ class Table(object):
         The caller guarantees that depth <= root.max_table_depth.
         """
 
-        if len(self._slots) == 0:
+        if not self._slots:
             raise HamtNotFound
 
         ndx = hcode & self._mask
@@ -630,6 +630,7 @@ class Root(object):
                 new_hcode = hcode >> self._texp    # hcode for new entry
                 node.insert_leaf(new_hcode, leaf)
 
-    def accept(self, func):
-        """ EXPERIMENT """
-        func(self)
+    # THIS CODE IS NEVER USED
+#   def accept(self, func):
+#       """ EXPERIMENT """
+#       func(self)

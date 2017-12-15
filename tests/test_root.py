@@ -59,7 +59,6 @@ class TestRoot(unittest.TestCase):
             myval[:] = value            # local copy of value
             mykey[0] &= ~mask
             mykey[0] |= slot_nbr
-            # pylint: disable=redefined-variable-type
             mykey = bytes(mykey)
 
             myval[0] &= ~mask
