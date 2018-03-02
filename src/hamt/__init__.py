@@ -7,8 +7,8 @@ import sys
 
 from xlutil import popcount64
 
-__version__ = '0.1.15'
-__version_date__ = '2017-12-15'
+__version__ = '0.1.16'
+__version_date__ = '2018-03-02'
 
 __all__ = ['__version__', '__version_date__',
            'MAX_W',

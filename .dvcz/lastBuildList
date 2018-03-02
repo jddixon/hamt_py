@@ -8,18 +8,18 @@ k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
 hamt_py
-2017-12-15 19:45:43
+2018-03-02 15:40:28
 # BEGIN CONTENT #
 hamt_py
  .dvcz
-  builds 6fde61ec5ee9adc9332419e159b0cab6c943b1d7
-  lastBuildList c27fc3939c0a98f3837f2fc7a77a739dc7d2e36c
+  builds 3893296ef98087a140f581f4b9c291200fddba80
+  lastBuildList 274bd7d67564a059cb778c43f58994fdc84c775f
   projCfg e1018a735804f73aa368ac13d83a18f566ee299f
   projCfg.local 3b240a4bea038e136d47f5fb94d9a50304aee3d6
-  projConfig.toml ce6a91e8daa3b4efbbf7cdd2932fe88c35c19385
+  projConfig.toml 6ef3fae7786d36d62b22357e887b070ef46f6dba
  .gitignore f588928d66e053d08e0c1d824b6874a244573090
  .gitignore.local 701e71ad917b19e7f6b7fd4bdc542180e9d977a7
- CHANGES 6317eab2da27185fcf8ecfc4ba7b0f3cdf147ae6
+ CHANGES 709877443fca24e864233f89081e463f90aea97d
  LICENSE-MIT.md aec2b90058ed291d26eef53badc44802cda9bcde
  MANIFEST.in 7ecdc5eedf233385e0f99ba4c6e4a42212adb46f
  README.md c42872778f76106b3a830d86758b20600c29d3ed
@@ -32,20 +32,20 @@ hamt_py
   index.md 9c6f24888d012058e4511eebbb384a294f49ed8c
  installit 20e618660744346913b6a3a6e5913044ebca0089
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
- requirements.txt 8d3fe1f6910decdc0c55535ce45dca06746b9359
+ requirements.txt 38323f4b9e7aea264e9744d261564afa869b3367
  setup.cfg f7c26178950ff87856972738d278b16b4dbdaddc
- setup.py 24ff56a513017cc4d15f3e5ca0f8fd706c838517
+ setup.py 27e39a058907b1a76411f7c922dce2d9e5dd1f26
  src
   hamt
-   __init__.py 16e589f3add7e7b5072bf10a0ad68baefa882ec6
+   __init__.py 39fc2125fdde9d9ef7ce981efce5c732b945ebf5
  styleit 458076cb0e5c42964626dfb773d4eb9d874ad89e
  test.all c85e5576f761b0087259705095fc71bb0c70c8f0
- test_requirements.txt fc40a98db4b8fa2e9f74bb4b1721107453cc8525
+ test_requirements.txt 3d600580a3ad3968a70d57081d68b8f7d48e09b6
  tests
   test_leaf.py c705153d72daef3b36a49bd3c3d9dd5d46bfd8ed
   test_root.py 2b2c2a41fda40bb7aadd1516551ab43b8972fa4e
   test_table.py adf44dd72746f9465ea4037eacdc529c6a02423d
- tox.ini 4e7aca973953035cd1f650820884d4c9704175fa
+ tox.ini 0d785cc4f294068e752c0d51c432fb635f915b50
 # END CONTENT #
 
-L6ocKdwcIYN0YK9nZP91cjzJZeiOdL/rjzenLVxxgS89Nu/AImxFsWGYSbMMEt2V1Td3hEbny3K9AAwXglW9HxTGfNqjbwMfTn/EPXMlpHr/zSZtPbovnPF/IZaeqm9AxABjGTOnjhCiXpGVvgTYmFQrtbDurXJmi86KZV07zVqJZUUkNosRu5VQ2Eb9xZJDLAslzQ257/EaKkZKGxze32RmxFfsTVsQRYN3LfstkM+XKvjKJgOLFVt/PrMsdLpynwZwU8m7GlAFwRp4KHQvcvha4/n7xe82K61bOU3sPwXtxAg8I4OfE68U1jTUWHS/VuqhIrCwSDjGfDsyCvyfRQ==
+f6wFlru5L+vEzJroELQ2/fqV0E44awHMLshpGbHxa4KfefLMB5+Gr89S6O7mRlAOcLpA3nOTui+i7Uw9ZOmLGjm9k0ScdlO6z9J1wNxWOEIi1YsmcDvLWNmY8TYWUT2DpnvCrZf44kz0gDhPnnGRXd5QKHW0v0jbp4RGJYLPH5b14V1N97v88m1gXwRH9yx9ZiqvuWEVbl6H4q1RFYzNrhOroTFXbqLgW9VdAYqkJeKqNooBXZGoDpYutsvLXu8dxAIZKt+yAnT/1m33M6xPIJ0WNHBb1faYWoqfH83wv1yV7uxIV/XWnWztqK5pVF0kmLV+z7RQv0K2p0FHouOlxw==
