@@ -1,5 +1,8 @@
 py/hamt_py/CHANGES
 
+v0.1.17
+    2018-03-23
+        * fix corrupt .dvcz/builds                                  SLOC 1183
 v0.1.16
     2018-03-02
         * edit setup.py, tox config files                           SLOC 1180
@@ -63,6 +66,7 @@ v0.0.2
 v0.0.1
     2017-03-02
         * initial commit
+
 
 
 
